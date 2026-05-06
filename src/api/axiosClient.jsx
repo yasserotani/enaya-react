@@ -1,9 +1,8 @@
 import axios from "axios";
-import { navigate } from "@reach/router";
+
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true, // required for Sanctum
-  headers: { Accept: "application/json" },
+  headers: { Accept: "application/json", "Content-Type": "application/json" },
 });
 // auto-attach token to every request
 axiosClient.interceptors.request.use((config) => {
@@ -17,7 +16,6 @@ axiosClient.interceptors.response.use(
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem("token");
-      navigate("/login");
     }
     return Promise.reject(err);
   },
