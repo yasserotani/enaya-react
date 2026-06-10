@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAuth } from "./useAuth";
-import { set } from "react-hook-form";
 
 export default function LogoutButton() {
   const { logout } = useAuth();
@@ -17,13 +16,13 @@ export default function LogoutButton() {
     }
   };
   return (
-    <div>
-      <button
-        onClick={handleLogut}
-        className="w-full rounded-lg bg-primary px-4 py-3 font-semibold text-background transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        {isLoading ? "Logging out..." : "Logout"}
-      </button>
-    </div>
+    <button
+      type="button"
+      onClick={handleLogut}
+      disabled={isLoading}
+      className="w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-background transition hover:bg-secondary/80 disabled:cursor-not-allowed disabled:opacity-70"
+    >
+      {isLoading ? "Logging out..." : "Logout"}
+    </button>
   );
 }

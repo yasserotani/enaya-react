@@ -8,7 +8,6 @@
     --theme-background: #f5f9fa;
     --theme-foreground: #08171c;
 
-    /* ── Semantic colors ── */
     --theme-success: #16a34a;
     --theme-success-light: #f0fdf4;
     --theme-success-border: #bbf7d0;
@@ -25,7 +24,6 @@
     --theme-info-light: #f0f9ff;
     --theme-info-border: #bae6fd;
 
-    /* ── Neutral shades ── */
     --theme-muted: #64748b;
     --theme-muted-light: #f1f5f9;
     --theme-border: #e2e8f0;
@@ -39,7 +37,6 @@
     --theme-background: #05090a;
     --theme-foreground: #e3f2f7;
 
-    /* ── Semantic colors ── */
     --theme-success: #4ade80;
     --theme-success-light: #052e16;
     --theme-success-border: #166534;
@@ -56,7 +53,6 @@
     --theme-info-light: #001e2e;
     --theme-info-border: #075985;
 
-    /* ── Neutral shades ── */
     --theme-muted: #94a3b8;
     --theme-muted-light: #0f172a;
     --theme-border: #1e293b;
@@ -71,7 +67,6 @@
   --color-background: var(--theme-background);
   --color-foreground: var(--theme-foreground);
 
-  /* ── Semantic ── */
   --color-success: var(--theme-success);
   --color-success-light: var(--theme-success-light);
   --color-success-border: var(--theme-success-border);
@@ -88,7 +83,6 @@
   --color-info-light: var(--theme-info-light);
   --color-info-border: var(--theme-info-border);
 
-  /* ── Neutral ── */
   --color-muted: var(--theme-muted);
   --color-muted-light: var(--theme-muted-light);
   --color-border: var(--theme-border);
@@ -105,5 +99,37 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+}
+
+@layer components {
+  /* Page layouts */
+  .page-container {
+    @apply mx-auto max-w-3xl py-4;
+  }
+
+  .page-card {
+    @apply relative rounded-2xl border border-border bg-surface p-6 shadow-lg md:p-8;
+  }
+
+  .page-content {
+    @apply flex flex-col items-center gap-4 text-center;
+  }
+
+  .page-title {
+    @apply text-3xl font-bold tracking-tight text-foreground md:text-4xl;
+  }
+
+  /* Navigation */
+  .nav-link-base {
+    @apply rounded-xl px-3 py-2.5 text-sm font-medium transition;
+  }
+
+  .nav-link-active {
+    @apply bg-primary text-background shadow-sm;
+  }
+
+  .nav-link-inactive {
+    @apply text-foreground/80 hover:bg-secondary/10 hover:text-foreground;
   }
 }

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAuth } from "../auth/useAuth";
 
-export default function DashboardPage() {
+export default function UsersPage() {
   const { fetchUser, user } = useAuth();
 
   useEffect(() => {
@@ -12,11 +12,9 @@ export default function DashboardPage() {
     <div className="page-container">
       <div className="page-card">
         <div className="page-content">
-          <h1 className="page-title">
-            Welcome to the dashboard, Mr. {user ? user.username : "Loading..."}
-          </h1>
+          <h1 className="page-title">Welcom to the users page</h1>
           <p className="max-w-lg text-sm text-foreground/70 md:text-base">
-            Your admin session is active and ready.
+            the users hasn't fetched yet
           </p>
         </div>
       </div>
