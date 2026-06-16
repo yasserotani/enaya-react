@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import DatePickerField from "../../../components/ui/DatePickerField";
-import {
-  fetchUserById,
-  updatePatient,
-  updateUser,
-} from "../api/usersApi";
+import { fetchUserById, updatePatient, updateUser } from "../api/usersApi";
 import { parseApiErrors } from "../../../utils/parseApiErrors";
 
 function getRoleName(role) {
-  return typeof role === "string" ? role : role?.name ?? "";
+  return typeof role === "string" ? role : (role?.name ?? "");
 }
 
 function getUserRole(user) {
@@ -188,7 +184,7 @@ export default function EditUserModal({ open, user, onClose, onUpdated }) {
       <button
         type="button"
         aria-label="Close modal"
-        className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/40 backdrop-blur-md"
         onClick={onClose}
       />
 
@@ -206,7 +202,10 @@ export default function EditUserModal({ open, user, onClose, onUpdated }) {
             Loading user details...
           </p>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-6 py-5">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4 px-6 py-5"
+          >
             {loadError && (
               <div className="rounded-xl border border-warning-border bg-warning-light px-4 py-3 text-sm text-warning">
                 {loadError}
@@ -229,39 +228,52 @@ export default function EditUserModal({ open, user, onClose, onUpdated }) {
                   />
                 </Field>
 
-                <Field label="Phone" error={fieldError("phone")}>
-                  <input
-                    {...register("phone", { required: true })}
-                    type="tel"
-                    placeholder="+963912345678"
-                    className={inputClassName}
-                  />
-                </Field>
+                <div className="grid grid-cols-2 gap-4">
+                  <Field label="Phone" error={fieldError("phone")}>
+                    <input
+                      {...register("phone", { required: true })}
+                      type="tel"
+                      placeholder="+963912345678"
+                      className={inputClassName}
+                    />
+                  </Field>
 
-                <Field label="Date of birth" error={fieldError("date_of_birth")}>
-                  <Controller
-                    name="date_of_birth"
-                    control={control}
-                    render={({ field }) => (
-                      <DatePickerField
-                        value={field.value}
-                        onChange={field.onChange}
-                        error={fieldError("date_of_birth")}
-                      />
-                    )}
-                  />
-                </Field>
+                  <Field label="Gender" error={fieldError("gender")}>
+                    <select
+                      {...register("gender", { required: true })}
+                      className={inputClassName}
+                    >
+                      <option value="">Select gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                  </Field>
 
-                <Field label="Gender" error={fieldError("gender")}>
-                  <select
-                    {...register("gender", { required: true })}
-                    className={inputClassName}
+                  <Field
+                    label="Date of birth"
+                    error={fieldError("date_of_birth")}
                   >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
-                </Field>
+                    <Controller
+                      name="date_of_birth"
+                      control={control}
+                      render={({ field }) => (
+                        <DatePickerField
+                          value={field.value}
+                          onChange={field.onChange}
+                          error={fieldError("date_of_birth")}
+                        />
+                      )}
+                    />
+                  </Field>
+
+                  <Field label="Job" error={fieldError("job")}>
+                    <input
+                      {...register("job")}
+                      type="text"
+                      className={inputClassName}
+                    />
+                  </Field>
+                </div>
 
                 <Field label="Address" error={fieldError("address")}>
                   <input

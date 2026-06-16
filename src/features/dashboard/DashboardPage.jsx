@@ -104,7 +104,7 @@ export default function DashboardPage() {
           label="Total Patients"
           value={dashboard.total_patients}
           sublabel="Registered in the system"
-          accent="primary"
+          accent="#333"
         />
         <StatCard
           icon={LocalHospitalOutlinedIcon}

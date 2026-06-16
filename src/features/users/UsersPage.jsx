@@ -11,6 +11,7 @@ const ROLE_FILTERS = [
   { value: "doctor", label: "Doctor" },
   { value: "receptionist", label: "Receptionist" },
   { value: "patient", label: "Patient" },
+  { value: "admin", label: "Admin" },
 ];
 
 function getRoleName(role) {
@@ -269,7 +270,7 @@ export default function UsersPage() {
                               e.stopPropagation();
                               setEditTarget(user);
                             }}
-                            className="rounded-lg px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-primary/10"
+                            className="rounded-lg px-3 py-1.5 text-sm font-medium text-primary transition  hover:bg-primary/10"
                           >
                             Edit
                           </button>

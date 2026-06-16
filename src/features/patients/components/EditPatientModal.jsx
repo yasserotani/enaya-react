@@ -142,7 +142,7 @@ export default function EditPatientModal({ open, patient, onClose, onUpdated }) 
       <button
         type="button"
         aria-label="Close modal"
-        className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/40 backdrop-blur-md"
         onClick={onClose}
       />
 
@@ -173,62 +173,44 @@ export default function EditPatientModal({ open, patient, onClose, onUpdated }) 
               </div>
             )}
 
-            <Field label="Full name" error={fieldError("full_name")}>
-              <input
-                {...register("full_name", { required: true })}
-                type="text"
-                className={inputClassName}
-              />
-            </Field>
+           
+    <Field label="Full name" error={fieldError("full_name")}>
+      <input {...register("full_name", { required: true })} type="text" className={inputClassName} />
+    </Field>
 
-            <Field label="Phone" error={fieldError("phone")}>
-              <input
-                {...register("phone", { required: true })}
-                type="tel"
-                placeholder="+963912345678"
-                className={inputClassName}
-              />
-            </Field>
+    <div className="grid grid-cols-2 gap-4">
+      <Field label="Phone" error={fieldError("phone")}>
+        <input {...register("phone", { required: true })} type="tel" placeholder="+963912345678" className={inputClassName} />
+      </Field>
 
-            <Field label="Gender" error={fieldError("gender")}>
-              <select
-                {...register("gender", { required: true })}
-                className={inputClassName}
-              >
-                <option value="">Select gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </Field>
+      <Field label="Gender" error={fieldError("gender")}>
+        <select {...register("gender", { required: true })} className={inputClassName}>
+          <option value="">Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </Field>
 
-            <Field label="Date of birth" error={fieldError("date_of_birth")}>
-              <Controller
-                name="date_of_birth"
-                control={control}
-                render={({ field }) => (
-                  <DatePickerField
-                    value={field.value}
-                    onChange={field.onChange}
-                    error={fieldError("date_of_birth")}
-                  />
-                )}
-              />
-            </Field>
+      <Field label="Date of birth" error={fieldError("date_of_birth")}>
+        <Controller name="date_of_birth" control={control} render={({ field }) => (
+          <DatePickerField value={field.value} onChange={field.onChange} error={fieldError("date_of_birth")} />
+        )} />
+      </Field>
 
-            <Field label="Address" error={fieldError("address")}>
-              <input
-                {...register("address")}
-                type="text"
-                className={inputClassName}
-              />
-            </Field>
+      <Field label="Job" error={fieldError("job")}>
+        <input {...register("job")} type="text" className={inputClassName} />
+      </Field>
+    </div>
 
-            <Field label="Job" error={fieldError("job")}>
-              <input
-                {...register("job")}
-                type="text"
-                className={inputClassName}
-              />
+    <Field label="Address" error={fieldError("address")}>
+      <input {...register("address")} type="text" className={inputClassName} />
+    </Field>
+    <Field label="Job" error={fieldError("job")}>
+      <input
+        {...register("job")}
+        type="text"
+        className={inputClassName}
+      />
             </Field>
 
             <div className="flex justify-end gap-3 border-t border-border pt-5">

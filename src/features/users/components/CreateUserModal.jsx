@@ -72,7 +72,7 @@ export default function CreateUserModal({ open, onClose, onCreated }) {
       <button
         type="button"
         aria-label="Close modal"
-        className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/40 backdrop-blur-md"
         onClick={onClose}
       />
 
