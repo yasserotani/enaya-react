@@ -1,4 +1,10 @@
-export default function StatCard({ icon: Icon, label, value, sublabel, accent = "primary" }) {
+export default function StatCard({
+  icon: Icon,
+  label,
+  value,
+  sublabel,
+  accent = "primary",
+}) {
   const accentStyles = {
     primary: "from-primary/20 to-primary/5 text-primary",
     accent: "from-accent/20 to-accent/5 text-accent",
@@ -21,7 +27,7 @@ export default function StatCard({ icon: Icon, label, value, sublabel, accent = 
         </div>
         {Icon ? (
           <div
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${accentStyles[accent] ?? accentStyles.primary}`}
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl  ${accentStyles[accent] ?? accentStyles.primary}`}
           >
             <Icon className="h-5 w-5" />
           </div>

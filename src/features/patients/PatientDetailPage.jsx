@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-import {
-  fetchPatientById,
-  fetchPatientByUserId,
-} from "./api/patientsApi";
+import { Link, useParams } from "react-router-dom"; // Removed useLocation
+import { fetchPatientById, fetchPatientByUserId } from "./api/patientsApi";
 
 function DetailRow({ label, value }) {
   return (
@@ -14,25 +11,16 @@ function DetailRow({ label, value }) {
   );
 }
 
-function formatDate(value) {
-  if (!value) return null;
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-
-  return date.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+function formatDate(date) {
+  if (!date) return "";
+  const d = new Date(date);
+  return d.toLocaleDateString();
 }
 
 export default function PatientDetailPage() {
   const { userId, patientId } = useParams();
-  const location = useLocation();
-  const accountEmail = location.state?.email;
-  const accountName = location.state?.name;
 
+  // We no longer need location.state because the API provides the email and name
   const [patient, setPatient] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,8 +42,8 @@ export default function PatientDetailPage() {
         if (!cancelled) {
           setError(
             err.response?.data?.message ||
-            err.response?.data?.error ||
-            "Failed to load patient details",
+              err.response?.data?.error ||
+              "Failed to load patient details",
           );
         }
       } finally {
@@ -119,10 +107,11 @@ export default function PatientDetailPage() {
               </h1>
             </div>
             <span
-              className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${patient.profile_completed
-                ? "bg-success-light text-success"
-                : "bg-warning-light text-warning"
-                }`}
+              className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
+                patient.profile_completed
+                  ? "bg-success-light text-success"
+                  : "bg-warning-light text-warning"
+              }`}
             >
               {patient.profile_completed
                 ? "Profile complete"
@@ -147,7 +136,7 @@ export default function PatientDetailPage() {
                 value={
                   patient.gender
                     ? patient.gender.charAt(0).toUpperCase() +
-                    patient.gender.slice(1)
+                      patient.gender.slice(1)
                     : null
                 }
               />
@@ -162,6 +151,10 @@ export default function PatientDetailPage() {
             <dl>
               <DetailRow label="Address" value={patient.address} />
               <DetailRow label="Job" value={patient.job} />
+              <DetailRow
+                label="Emergency Contact"
+                value={patient.emergency_contact}
+              />
             </dl>
           </section>
 
@@ -176,11 +169,13 @@ export default function PatientDetailPage() {
               />
               {hasAccount && (
                 <>
+                  {/* Now we fetch these safely directly from the patient object! */}
                   <DetailRow
                     label="Account name"
-                    value={accountName || "—"}
+                    value={patient.account_name || "—"}
                   />
-                  <DetailRow label="Email" value={accountEmail || "—"} />
+                  <DetailRow label="Email" value={patient.email || "—"} />
+                  <DetailRow label="Userid" value={patient.user_id || "—"} />
                 </>
               )}
             </dl>

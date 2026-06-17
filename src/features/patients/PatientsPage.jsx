@@ -4,6 +4,9 @@ import { fetchPatients, deletePatient } from "./api/patientsApi";
 import EditPatientModal from "./components/EditPatientModal";
 import DeletePatientConfirm from "./components/DeletePatientConfirm";
 
+import DatePickerField from "../../components/ui/DatePickerField";
+
+// --- Profile Status Badge Component ---
 function ProfileStatusBadge({ completed }) {
   return (
     <span
@@ -24,6 +27,7 @@ function ProfileStatusBadge({ completed }) {
   );
 }
 
+// --- Main Patients Page Component ---
 export default function PatientsPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,13 +35,25 @@ export default function PatientsPage() {
   const [successMessage, setSuccessMessage] = useState(
     location.state?.successMessage ?? null,
   );
+
+  // State for toggling the advanced filter dropdown
+  const [showFilters, setShowFilters] = useState(false);
+
   const [patients, setPatients] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [genderFilter, setGenderFilter] = useState("");
-  const [accountFilter, setAccountFilter] = useState("");
+
+  const [filters, setFilters] = useState({
+    gender: "",
+    profile_completed: "",
+    created_from: "",
+    created_to: "",
+    birth_from: "",
+    birth_to: "",
+  });
+
   const [isLoading, setIsLoading] = useState(true);
   const [listError, setListError] = useState(null);
   const [editTarget, setEditTarget] = useState(null);
@@ -52,6 +68,7 @@ export default function PatientsPage() {
     navigate(location.pathname, { replace: true, state: null });
   }, [location.pathname, location.state, navigate]);
 
+  // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search.trim());
@@ -64,14 +81,25 @@ export default function PatientsPage() {
   const loadPatients = useCallback(async () => {
     setIsLoading(true);
     setListError(null);
-
     try {
-      const params = { page: currentPage };
-      if (debouncedSearch) params.search = debouncedSearch;
-      if (genderFilter) params.gender = genderFilter;
-      if (accountFilter) params.has_account = accountFilter;
+      const params = {
+        page: currentPage,
+        ...filters,
+      };
+      console.log(params);
+
+      if (debouncedSearch) {
+        params.search = debouncedSearch;
+      }
+
+      Object.keys(params).forEach((key) => {
+        if (params[key] === "") {
+          delete params[key];
+        }
+      });
 
       const result = await fetchPatients(params);
+
       setPatients(result.data ?? []);
       setCurrentPage(result.current_page ?? 1);
       setLastPage(result.last_page ?? 1);
@@ -85,14 +113,30 @@ export default function PatientsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, debouncedSearch, genderFilter, accountFilter]);
+  }, [currentPage, debouncedSearch, filters]);
 
   useEffect(() => {
     void loadPatients();
   }, [loadPatients]);
 
-  const handleFilterChange = (setter) => (value) => {
-    setter(value);
+  const updateFilter = (name, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setCurrentPage(1);
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      gender: "",
+      profile_completed: "",
+      created_from: "",
+      created_to: "",
+      birth_from: "",
+      birth_to: "",
+    });
+    setSearch("");
     setCurrentPage(1);
   };
 
@@ -105,7 +149,9 @@ export default function PatientsPage() {
     try {
       await deletePatient(deleteTarget.id);
       setDeleteTarget(null);
-      setSuccessMessage(`Patient "${deleteTarget.full_name}" deleted successfully.`);
+      setSuccessMessage(
+        `Patient "${deleteTarget.full_name}" deleted successfully.`,
+      );
 
       if (patients.length === 1 && currentPage > 1) {
         setCurrentPage((page) => page - 1);
@@ -127,17 +173,22 @@ export default function PatientsPage() {
     setEditTarget(patient);
   };
 
+  // Reusable styled class for select menus
+  const selectInputClass =
+    "w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm text-foreground outline-none transition placeholder:text-foreground/30 focus:border-primary focus:ring-4 focus:ring-primary/15 cursor-pointer";
+
+  // Check if any advanced filters are active to optionally highlight the filter button
+  const hasActiveFilters = Object.values(filters).some((val) => val !== "");
+
   return (
     <div className="mx-auto max-w-6xl py-4">
       <div className="rounded-2xl border border-border bg-surface shadow-lg">
+        {/* Header Section */}
         <div className="flex flex-col gap-4 border-b border-border px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
               Patients
             </h1>
-            <p className="mt-1 text-sm text-foreground/60">
-              All registered walk-in and app-linked patients
-            </p>
           </div>
           <Link
             to="/patients/new"
@@ -147,40 +198,126 @@ export default function PatientsPage() {
           </Link>
         </div>
 
-        <div className="flex flex-col gap-3 border-b border-border px-6 py-4 sm:flex-row">
-          <div className="flex-1">
-            <input
-              type="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name or phone..."
-              className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition placeholder:text-foreground/30 focus:border-primary focus:ring-4 focus:ring-primary/15"
-            />
-          </div>
-          <select
-            value={genderFilter}
-            onChange={(e) =>
-              handleFilterChange(setGenderFilter)(e.target.value)
-            }
-            className="rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 sm:w-40"
+        {/* --- Top Filter Bar (Essential Controls) --- */}
+        <div className="flex items-center gap-3 border-b border-border bg-background px-6 py-4">
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name or phone..."
+            className="flex-1 rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition placeholder:text-foreground/30 focus:border-primary focus:ring-4 focus:ring-primary/15"
+          />
+          <button
+            type="button"
+            onClick={() => setShowFilters(!showFilters)}
+            className={`shrink-0 rounded-xl border px-4 py-2.5 text-sm font-semibold transition ${
+              showFilters || hasActiveFilters
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-background text-foreground/70 hover:bg-muted-light/60 hover:text-foreground"
+            }`}
           >
-            <option value="">All genders</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-          <select
-            value={accountFilter}
-            onChange={(e) =>
-              handleFilterChange(setAccountFilter)(e.target.value)
-            }
-            className="rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/15 sm:w-44"
-          >
-            <option value="">All patients</option>
-            <option value="true">With app account</option>
-            <option value="false">Walk-in only</option>
-          </select>
+            Filters {hasActiveFilters && "•"}
+          </button>
         </div>
 
+        {/* --- Collapsible Advanced Filters Drawer --- */}
+        {showFilters && (
+          <div className="flex flex-col gap-4 border-b border-border bg-muted-light/10 px-6 py-5">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+              {/* Categorical Filters */}
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-foreground/60">
+                  Gender
+                </label>
+                <select
+                  value={filters.gender}
+                  onChange={(e) => updateFilter("gender", e.target.value)}
+                  className={selectInputClass}
+                >
+                  <option value="">All genders</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-foreground/60">
+                  Profile Status
+                </label>
+                <select
+                  value={filters.profile_completed}
+                  onChange={(e) =>
+                    updateFilter("profile_completed", e.target.value)
+                  }
+                  className={selectInputClass}
+                >
+                  <option value="">All profiles</option>
+                  <option value="true">Complete</option>
+                  <option value="false">Incomplete</option>
+                </select>
+              </div>
+
+              {/* Date Filters: Created */}
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-foreground/60">
+                  Created From
+                </label>
+                <DatePickerField
+                  value={filters.created_from}
+                  onChange={(val) => updateFilter("created_from", val)}
+                  placeholder="Start date"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-foreground/60">
+                  Created To
+                </label>
+                <DatePickerField
+                  value={filters.created_to}
+                  onChange={(val) => updateFilter("created_to", val)}
+                  placeholder="End date"
+                />
+              </div>
+
+              {/* Date Filters: Birth */}
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-foreground/60">
+                  Birth From
+                </label>
+                <DatePickerField
+                  value={filters.birth_from}
+                  onChange={(val) => updateFilter("birth_from", val)}
+                  placeholder="Start date"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-foreground/60">
+                  Birth To
+                </label>
+                <DatePickerField
+                  value={filters.birth_to}
+                  onChange={(val) => updateFilter("birth_to", val)}
+                  placeholder="End date"
+                />
+              </div>
+
+              {/* Clear Controls */}
+              <div className="flex items-end sm:col-span-2 md:col-span-2">
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground/70 transition hover:bg-muted-light/60 hover:text-foreground active:bg-muted-light"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Action Alerts */}
         {successMessage && (
           <div className="mx-6 mt-4 rounded-xl border border-success-border bg-success-light px-4 py-3 text-sm text-success">
             {successMessage}
@@ -193,6 +330,7 @@ export default function PatientsPage() {
           </div>
         )}
 
+        {/* Data Presentation Table Grid */}
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
@@ -296,6 +434,7 @@ export default function PatientsPage() {
           </table>
         </div>
 
+        {/* Footer Pagination controls */}
         {lastPage > 1 && (
           <div className="flex items-center justify-between border-t border-border px-6 py-4">
             <p className="text-sm text-foreground/60">
@@ -323,6 +462,7 @@ export default function PatientsPage() {
         )}
       </div>
 
+      {/* Action Modals */}
       <EditPatientModal
         open={Boolean(editTarget)}
         patient={editTarget}

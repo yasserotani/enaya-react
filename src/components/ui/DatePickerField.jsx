@@ -6,7 +6,6 @@ export default function DatePickerField({ value, onChange, error }) {
     <DatePicker
       value={value ? dayjs(value) : null}
       onChange={(date) => onChange(date ? date.format("YYYY-MM-DD") : "")}
-      maxDate={dayjs().subtract(1, "day")}
       slotProps={{
         textField: {
           fullWidth: true,
@@ -22,7 +21,8 @@ export default function DatePickerField({ value, onChange, error }) {
               "&.Mui-focused fieldset": {
                 borderColor: "var(--theme-primary)",
                 borderWidth: "1px",
-                boxShadow: "0 0 0 4px color-mix(in srgb, var(--theme-primary) 15%, transparent)",
+                boxShadow:
+                  "0 0 0 4px color-mix(in srgb, var(--theme-primary) 15%, transparent)",
               },
             },
             "& .MuiPickersSectionList-root": {

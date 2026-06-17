@@ -85,8 +85,8 @@ export default function DashboardPage() {
             Dashboard
           </h1>
           <p className="mt-1 text-sm text-foreground/60 md:text-base">
-            Welcome back, {getDisplayName(user)}. Here&apos;s what&apos;s happening at
-            Enaya today.
+            Welcome back, {getDisplayName(user)}. Here&apos;s what&apos;s
+            happening at Enaya today.
           </p>
         </div>
         <button
@@ -160,6 +160,7 @@ export default function DashboardPage() {
             isDark={isDark}
           />
         </div>
+
         <StaffDistributionChart
           totalPatients={dashboard.total_patients}
           totalDoctors={dashboard.total_doctors}
