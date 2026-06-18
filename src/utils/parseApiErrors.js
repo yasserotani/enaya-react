@@ -7,7 +7,9 @@ function duplicateEntryMessage(message, key, field, label) {
   const value = match?.[1];
 
   if (value) {
-    return { [field]: [`A user with this ${label} "${value}" already exists.`] };
+    return {
+      [field]: [`A user with this ${label} "${value}" already exists.`],
+    };
   }
 
   return { [field]: [`This ${label} is already taken.`] };
@@ -22,8 +24,13 @@ export function parseApiErrors(err) {
   }
 
   const message = data?.message || data?.error;
+
   if (typeof message !== "string") {
     return { general: ["Something went wrong. Please try again."] };
+  }
+
+  if (message === "Unauthenticated.") {
+    return { general: ["Your session has expired. Please log in again."] };
   }
 
   return (
@@ -40,7 +47,6 @@ export function parseApiErrors(err) {
       "patients_phone_unique",
       "phone",
       "phone number",
-    ) ||
-    { general: [message] }
+    ) || { general: [message] }
   );
 }

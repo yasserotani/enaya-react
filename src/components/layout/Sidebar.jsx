@@ -3,26 +3,21 @@ import LogoutButton from "../../features/auth/LogoutButton";
 import logoImg from "../../assets/icon-logo.png";
 export default function Sidebar() {
   return (
-    <aside className="flex w-72 shrink-0 flex-col border-r border-border bg-background/60 p-4 backdrop-blur-sm">
+    <aside className="flex w-72 h-screen sticky top-0 shrink-0 flex-col border-r border-border bg-background/60 p-4 backdrop-blur-sm">
       {/* Logo Section */}
- <div className="mb-6 border-b border-border/70 pb-5">
-  <div className="flex items-center gap-4 px-2">
-    <img
-      src={logoImg}
-      alt="Enaya logo"
-      className="h-16 w-16 object-contain"
-    />
+      <div className="mb-6 border-b border-border/70 pb-5">
+        <div className="flex items-center gap-4 px-2">
+          <img
+            src={logoImg}
+            alt="Enaya logo"
+            className="h-16 w-16 object-contain"
+          />
 
-    <h1 className="text-2xl font-bold tracking-tight text-foreground">
-      Enaya
-    </h1>
-  </div>
-</div>
-
-
-
-
-
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            Enaya
+          </h1>
+        </div>
+      </div>
 
       {/* Navigation */}
       <nav className="flex flex-1 flex-col gap-5">

@@ -19,7 +19,7 @@ export default function DatePickerField({ value, onChange, error }) {
               "& fieldset": { borderColor: "var(--theme-border)" },
               "&:hover fieldset": { borderColor: "var(--theme-primary)" },
               "&.Mui-focused fieldset": {
-                borderColor: "var(--theme-primary)",
+                borderColor: "var(  --theme-primary)",
                 borderWidth: "1px",
                 boxShadow:
                   "0 0 0 4px color-mix(in srgb, var(--theme-primary) 15%, transparent)",

@@ -15,7 +15,7 @@ const ROLE_FILTERS = [
 ];
 
 function getRoleName(role) {
-  return typeof role === "string" ? role : role?.name ?? "";
+  return typeof role === "string" ? role : (role?.name ?? "");
 }
 
 function isPatientUser(user) {

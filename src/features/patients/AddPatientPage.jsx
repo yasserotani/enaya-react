@@ -4,7 +4,6 @@ import { Controller, useForm } from "react-hook-form";
 import DatePickerField from "../../components/ui/DatePickerField";
 import { createPatient } from "./api/patientsApi";
 import { parseApiErrors } from "../../utils/parseApiErrors";
-
 const inputClassName =
   "w-full rounded-xl border border-border bg-background px-4 py-2.5 text-foreground outline-none transition placeholder:text-foreground/30 focus:border-primary focus:ring-4 focus:ring-primary/15";
 
