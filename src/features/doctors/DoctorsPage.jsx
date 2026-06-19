@@ -37,6 +37,7 @@ export default function DoctorsPage() {
   const [specialtyFilter, setSpecialtyFilter] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [genderFilter, setGenderFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(""); // "" (Active Only), "inactive", or "all"
 
   const [isLoading, setIsLoading] = useState(true);
   const [listError, setListError] = useState(null);
@@ -90,6 +91,11 @@ export default function DoctorsPage() {
       if (departmentFilter) params.department_id = departmentFilter;
       if (genderFilter) params.gender = genderFilter;
 
+      // Exactly as per API Guide: Use with_trashed=true to include soft-deleted records
+      if (statusFilter === "all" || statusFilter === "inactive") {
+        params.with_trashed = "true";
+      }
+
       const result = await fetchDoctors(params);
 
       setDoctors(result.data ?? []);
@@ -111,11 +117,20 @@ export default function DoctorsPage() {
     specialtyFilter,
     departmentFilter,
     genderFilter,
+    statusFilter,
   ]);
 
   useEffect(() => {
     void loadDoctors();
   }, [loadDoctors]);
+
+  // Client-side status filter handling since backend only provides "with_trashed" inclusion
+  const displayedDoctors = useMemo(() => {
+    if (statusFilter === "inactive") {
+      return doctors.filter((doctor) => Boolean(doctor.deleted_at));
+    }
+    return doctors;
+  }, [doctors, statusFilter]);
 
   const specialtyOptions = useMemo(() => {
     const fromDoctors = doctors
@@ -194,6 +209,17 @@ export default function DoctorsPage() {
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>
+
+        {/* Status Filter Component dropdown */}
+        <select
+          value={statusFilter}
+          onChange={handleFilterChange(setStatusFilter)}
+          className="rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary focus:ring-4 focus:ring-primary/15"
+        >
+          <option value="">Active Only</option>
+          <option value="inactive">Inactive / Deleted</option>
+          <option value="all">All Statuses</option>
+        </select>
       </div>
 
       {successMessage && (
@@ -213,13 +239,13 @@ export default function DoctorsPage() {
           <p className="py-12 text-center text-sm text-foreground/50">
             Loading doctors...
           </p>
-        ) : doctors.length === 0 ? (
+        ) : displayedDoctors.length === 0 ? (
           <p className="py-12 text-center text-sm text-foreground/50">
             No doctors found
           </p>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {doctors.map((doctor) => {
+            {displayedDoctors.map((doctor) => {
               const name = getDoctorName(doctor);
               const departmentName =
                 doctor.department?.name ?? doctor.department_name ?? "—";
@@ -231,12 +257,6 @@ export default function DoctorsPage() {
                   role="button"
                   tabIndex={0}
                   onClick={() => navigate(`/doctors/${doctor.id}`)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      navigate(`/doctors/${doctor.id}`);
-                    }
-                  }}
                   className="group cursor-pointer rounded-2xl border border-border bg-surface/80 p-4 shadow-sm transition hover:border-primary/60 hover:bg-surface hover:shadow-lg"
                 >
                   <div className="flex items-start justify-between gap-3">

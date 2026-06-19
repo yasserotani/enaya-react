@@ -2,19 +2,28 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
 import axiosClient from "../../api/axiosClient";
+
 export function useAuth() {
-  const { token, user, setAuth, clearAuth } = useAuthStore();
+  const { token, user, isLoading, setAuth, clearAuth, setLoading } =
+    useAuthStore();
   const navigate = useNavigate();
 
   const fetchUser = useCallback(async () => {
-    if (!token || user) return;
+    // If there's no token, we aren't logging in
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    // If the user object is already present, no need to duplicate network fetch
+    if (user) return;
+
     try {
       const res = await axiosClient.get("/auth/me");
       setAuth(token, res.data.data.user);
     } catch {
       clearAuth();
     }
-  }, [clearAuth, setAuth, token, user]);
+  }, [clearAuth, setAuth, setLoading, token, user]);
 
   const login = useCallback(
     async (credentials) => {
@@ -31,12 +40,12 @@ export function useAuth() {
     try {
       await axiosClient.post("/auth/logout");
     } catch {
-      // Even if logout fails on backend, clear local auth state
+      // Fallback local cleanup
     } finally {
       clearAuth();
       navigate("/login", { replace: true });
     }
   }, [clearAuth, navigate]);
 
-  return { token, fetchUser, login, logout, user };
+  return { token, fetchUser, login, logout, user, isLoading };
 }
