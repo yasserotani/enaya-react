@@ -12,6 +12,8 @@ import NotFoundPage from "../features/notFound/NotFoundPage";
 import Layout from "../components/layout/Layout";
 import UsersPage from "../features/users/UsersPage";
 import DoctorsPage from "../features/doctors/DoctorsPage";
+import DoctorDetailPage from "../features/doctors/DoctorDetailPage";
+import AddDoctorPage from "../features/doctors/AddDoctorPage";
 import AppointmentsPage from "../features/appointments/AppointmentsPage";
 import RolesPage from "../features/roles/RolesPage";
 import PatientsPage from "../features/patients/PatientsPage";
@@ -44,6 +46,8 @@ export default function AppRouter() {
           />
           <Route path="/patients/:patientId" element={<PatientDetailPage />} />
           <Route path="/doctors" element={<DoctorsPage />} />
+          <Route path="/doctors/new" element={<AddDoctorPage />} />
+          <Route path="/doctors/:doctorId" element={<DoctorDetailPage />} />
           <Route path="/appointments" element={<AppointmentsPage />} />
           <Route path="/roles" element={<RolesPage />} />
         </Route>
