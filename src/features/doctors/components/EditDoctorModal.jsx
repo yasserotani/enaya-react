@@ -31,7 +31,31 @@ export default function EditDoctorModal({ open, doctor, onClose, onUpdated }) {
     reset,
     formState: { isSubmitting },
   } = useForm();
-
+  const timeSlots = [
+    "07:00",
+    "07:30",
+    "08:00",
+    "08:30",
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+    "16:30",
+    "17:00",
+    "17:30",
+    "18:00",
+  ];
   useEffect(() => {
     if (!open) {
       reset();
@@ -64,10 +88,10 @@ export default function EditDoctorModal({ open, doctor, onClose, onUpdated }) {
 
   useEffect(() => {
     if (!open || !doctor) return;
-
+    console.log(doctor.working_hours_start);
     reset({
       name: doctor.full_name ?? doctor.name ?? "",
-      email: doctor.email ?? "",
+      email: doctor.user.email ?? "",
       phone: doctor.phone ?? "",
       date_of_birth: doctor.date_of_birth ?? "",
       gender: doctor.gender ?? "",
@@ -256,11 +280,16 @@ export default function EditDoctorModal({ open, doctor, onClose, onUpdated }) {
                 error={fieldError("working_hours_start")}
                 className="col-span-2 sm:col-span-1"
               >
-                <input
+                <select
                   {...register("working_hours_start", { required: true })}
-                  type="time"
                   className={inputClassName}
-                />
+                >
+                  {timeSlots.map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
               </Field>
 
               <Field
@@ -268,11 +297,16 @@ export default function EditDoctorModal({ open, doctor, onClose, onUpdated }) {
                 error={fieldError("working_hours_end")}
                 className="col-span-2 sm:col-span-1"
               >
-                <input
+                <select
                   {...register("working_hours_end", { required: true })}
-                  type="time"
                   className={inputClassName}
-                />
+                >
+                  {timeSlots.map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))}
+                </select>
               </Field>
             </div>
           </div>

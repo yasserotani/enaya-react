@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { fetchDepartments, fetchDoctors } from "./api/doctorsApi";
+import {
+  fetchDepartments,
+  fetchDoctors,
+  restoreDoctor,
+} from "./api/doctorsApi";
 
 function getDoctorName(doctor) {
   return doctor.full_name ?? doctor.name ?? "Unknown";
@@ -38,9 +42,11 @@ export default function DoctorsPage() {
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [genderFilter, setGenderFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState(""); // "" (Active Only), "inactive", or "all"
-
   const [isLoading, setIsLoading] = useState(true);
   const [listError, setListError] = useState(null);
+  const [restoringId, setRestoringId] = useState(null);
+  const [restoreError, setRestoreError] = useState(null);
+  const [specialtyOptions, setSpecialtyOptions] = useState([]);
 
   useEffect(() => {
     if (!location.state?.successMessage) return;
@@ -124,7 +130,6 @@ export default function DoctorsPage() {
     void loadDoctors();
   }, [loadDoctors]);
 
-  // Client-side status filter handling since backend only provides "with_trashed" inclusion
   const displayedDoctors = useMemo(() => {
     if (statusFilter === "inactive") {
       return doctors.filter((doctor) => Boolean(doctor.deleted_at));
@@ -132,19 +137,39 @@ export default function DoctorsPage() {
     return doctors;
   }, [doctors, statusFilter]);
 
-  const specialtyOptions = useMemo(() => {
-    const fromDoctors = doctors
-      .map((doctor) => doctor.specialty)
-      .filter(Boolean);
-    const unique = [...new Set(fromDoctors)];
-    return unique.sort();
+  useEffect(() => {
+    setSpecialtyOptions((prevOptions) => {
+      const newSpecialties = doctors
+        .map((doctor) => doctor.specialty)
+        .filter(Boolean);
+
+      const combinedUnique = [...new Set([...prevOptions, ...newSpecialties])];
+
+      return combinedUnique.sort();
+    });
   }, [doctors]);
 
   const handleFilterChange = (setter) => (event) => {
     setter(event.target.value);
     setCurrentPage(1);
   };
-
+  const handleRestore = async (id) => {
+    setRestoringId(id);
+    setRestoreError(null);
+    try {
+      await restoreDoctor(id);
+      setSuccessMessage("Doctor restored successfully");
+      await loadDoctors();
+    } catch (err) {
+      setRestoreError(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Failed to restore doctor",
+      );
+    } finally {
+      setRestoringId(null);
+    }
+  };
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between gap-4 border-b border-border px-6 py-5">
@@ -304,6 +329,15 @@ export default function DoctorsPage() {
                       <span className="text-foreground/55">Phone</span>
                       <span className="font-mono text-[11px] text-foreground/85">
                         {doctor.phone || "—"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-foreground/55">Email</span>
+                      <span
+                        className="truncate max-w-[140px] text-[11px] text-foreground/80"
+                        title={doctor.email || doctor.user?.email || "No email"}
+                      >
+                        {doctor.email || doctor.user?.email || "—"}
                       </span>
                     </div>
                   </div>

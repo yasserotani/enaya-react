@@ -19,7 +19,7 @@ import RolesPage from "../features/roles/RolesPage";
 import PatientsPage from "../features/patients/PatientsPage";
 import PatientDetailPage from "../features/patients/PatientDetailPage";
 import AddPatientPage from "../features/patients/AddPatientPage";
-
+import DepartmentPage from "../features/departments/DepartmentPage";
 function ProtectedLayout() {
   return (
     <ProtectedRoute>
@@ -50,6 +50,7 @@ export default function AppRouter() {
           <Route path="/doctors/:doctorId" element={<DoctorDetailPage />} />
           <Route path="/appointments" element={<AppointmentsPage />} />
           <Route path="/roles" element={<RolesPage />} />
+          <Route path="/departments" element={<DepartmentPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

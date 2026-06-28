@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-  deleteDoctor,
-  fetchDoctorById,
-  restoreDoctor,
-} from "./api/doctorsApi";
+import { deleteDoctor, fetchDoctorById, restoreDoctor } from "./api/doctorsApi";
 import EditDoctorModal from "./components/EditDoctorModal";
 import DeleteDoctorConfirm from "./components/DeleteDoctorConfirm";
 import ResetPasswordModal from "./components/ResetPasswordModal";
-
 function DetailRow({ label, value }) {
   return (
     <div className="flex flex-col gap-1 border-b border-border/60 py-3 last:border-b-0 sm:flex-row sm:items-center sm:justify-between">
@@ -66,7 +61,6 @@ export default function DoctorDetailPage() {
   const [isRestoring, setIsRestoring] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
   const [actionError, setActionError] = useState(null);
-
   useEffect(() => {
     let cancelled = false;
 
@@ -156,6 +150,7 @@ export default function DoctorDetailPage() {
       setSuccessMessage(
         `Doctor "${getDoctorName(doctor)}" restored successfully.`,
       );
+      // navigate("/doctors");
     } catch (err) {
       setActionError(
         err.response?.data?.message ||
@@ -290,8 +285,11 @@ export default function DoctorDetailPage() {
               Account
             </h2>
             <dl>
-              <DetailRow label="Email" value={doctor.email} />
-              <DetailRow label="User ID" value={doctor.user_id} />
+              <DetailRow label="User ID" value={doctor.user?.id || "—"} />
+              <DetailRow
+                label="Email"
+                value={doctor.email || doctor.user?.email || "—"}
+              />{" "}
             </dl>
           </section>
 
@@ -315,32 +313,34 @@ export default function DoctorDetailPage() {
           </section>
         </div>
 
-        <div className="flex flex-wrap gap-2 border-t border-border px-6 py-4">
+        <div className="flex flex-wrap justify-between gap-2 border-t border-border px-6 py-4">
           {!isDeleted ? (
             <>
-              <button
-                type="button"
-                onClick={() => setEditOpen(true)}
-                className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground/80 transition hover:bg-muted-light"
-              >
-                Edit doctor
-              </button>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setEditOpen(true)}
+                  className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-primary m-2 transition hover:bg-muted-light"
+                >
+                  Edit doctor
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setResetPasswordOpen(true)}
+                  className="rounded-xl border border-primary/40 px-4 py-2.5 text-sm font-medium text-foreground/80 transition hover:bg-primary/10"
+                >
+                  Reset password
+                </button>
+              </div>
               <button
                 type="button"
                 onClick={() => {
                   setDeleteError(null);
                   setDeleteOpen(true);
                 }}
-                className="rounded-xl bg-error px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+                className="rounded-xl bg-error/80 h-10 px-4 py-2.5 text-sm font-semibold text-white transition hover:opacity-50"
               >
                 Delete doctor
-              </button>
-              <button
-                type="button"
-                onClick={() => setResetPasswordOpen(true)}
-                className="rounded-xl border border-primary/40 px-4 py-2.5 text-sm font-medium text-primary transition hover:bg-primary/10"
-              >
-                Reset password
               </button>
             </>
           ) : (
@@ -381,9 +381,7 @@ export default function DoctorDetailPage() {
         open={resetPasswordOpen}
         doctor={doctor}
         onClose={() => setResetPasswordOpen(false)}
-        onReset={() =>
-          setSuccessMessage("Password reset successfully.")
-        }
+        onReset={() => setSuccessMessage("Password reset successfully.")}
       />
     </div>
   );

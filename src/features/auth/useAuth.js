@@ -27,9 +27,20 @@ export function useAuth() {
 
   const login = useCallback(
     async (credentials) => {
-      const res = await axiosClient.post("/auth/login", credentials);
-      const token = res.data.data.token;
-      const user = res.data.data.user;
+      const { data } = await axiosClient.post("/auth/login", credentials);
+
+      const { token, user } = data.data;
+
+      // Extract roleId
+      const roleId = user.roleId;
+
+      // Allowed roles: 1 = admin, 2 = receptionist
+      const allowedRoles = [4];
+
+      if (!allowedRoles.includes(roleId)) {
+        throw new Error("Access denied");
+      }
+
       setAuth(token, user);
       navigate("/dashboard", { replace: true });
     },

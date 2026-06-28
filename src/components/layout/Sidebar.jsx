@@ -78,6 +78,14 @@ export default function Sidebar() {
               >
                 <span>Appointments</span>
               </NavLink>
+              <NavLink
+                to="/departments"
+                className={({ isActive }) =>
+                  `nav-link-base ${isActive ? "nav-link-active" : "nav-link-inactive"}`
+                }
+              >
+                <span>Departments</span>
+              </NavLink>
             </div>
           </div>
 
