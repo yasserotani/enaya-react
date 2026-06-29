@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import DatePickerField from "../../components/ui/DatePickerField";
 import { createPatient } from "./api/patientsApi";
@@ -21,6 +21,7 @@ function Field({ label, error, children }) {
 
 export default function AddPatientPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [serverErrors, setServerErrors] = useState({});
 
   const {
@@ -28,6 +29,7 @@ export default function AddPatientPage() {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { isSubmitting },
   } = useForm({
     defaultValues: {
@@ -39,6 +41,13 @@ export default function AddPatientPage() {
       job: "",
     },
   });
+
+  // Prefill name if coming from appointment modal
+  useEffect(() => {
+    if (location.state?.prefillName) {
+      setValue("full_name", location.state.prefillName);
+    }
+  }, [location.state, setValue]);
 
   const fieldError = (field) => serverErrors[field]?.[0];
 
@@ -63,6 +72,30 @@ export default function AddPatientPage() {
       }
 
       const result = await createPatient(payload);
+
+      // Check if we should return to appointment creation
+      if (location.state?.returnToAppointment) {
+        const patientData = result.data || result;
+        const newPatient = {
+          id: patientData.id,
+          full_name: formData.full_name,
+          phone: formData.phone,
+          gender: formData.gender,
+          date_of_birth: formData.date_of_birth,
+          address: formData.address,
+          job: formData.job,
+        };
+
+        navigate("/queue", {
+          replace: true,
+          state: {
+            newlyCreatedPatient: newPatient,
+            openAppointmentModal: true,
+            appointmentFormData: location.state.appointmentFormData,
+          },
+        });
+        return;
+      }
 
       navigate("/patients", {
         replace: true,
@@ -139,7 +172,7 @@ export default function AddPatientPage() {
             </select>
           </Field>
 
-          <Field label="Date of birth" error={fieldError("date_of_birth")} >
+          <Field label="Date of birth" error={fieldError("date_of_birth")}>
             <Controller
               name="date_of_birth"
               control={control}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import RefreshOutlinedIcon from "@mui/icons-material/RefreshOutlined";
 import { fetchDepartments, fetchDoctors } from "../doctors/api/doctorsApi";
@@ -27,6 +27,8 @@ const REFRESH_INTERVAL_MS = 30_000;
 
 export default function QueueMonitoringPage() {
   const today = getTodayDateString();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [appointments, setAppointments] = useState([]);
   const [doctors, setDoctors] = useState([]);
@@ -38,6 +40,7 @@ export default function QueueMonitoringPage() {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newlyCreatedPatient, setNewlyCreatedPatient] = useState(null);
 
   const loadQueue = useCallback(
     async (showRefreshState = false) => {
@@ -95,6 +98,16 @@ export default function QueueMonitoringPage() {
 
     return () => clearInterval(interval);
   }, [loadQueue]);
+
+  // Handle returning from patient creation page
+  useEffect(() => {
+    if (location.state?.newlyCreatedPatient) {
+      setNewlyCreatedPatient(location.state.newlyCreatedPatient);
+      setShowCreateModal(true);
+      // Clear the state
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   const allQueues = useMemo(
     () => groupAppointmentsByDoctor(appointments, doctors),
@@ -332,9 +345,14 @@ export default function QueueMonitoringPage() {
       <CreateAppointmentModal
         open={showCreateModal}
         doctors={doctors}
-        onClose={() => setShowCreateModal(false)}
+        newlyCreatedPatient={newlyCreatedPatient}
+        onClose={() => {
+          setShowCreateModal(false);
+          setNewlyCreatedPatient(null);
+        }}
         onCreated={() => {
           setShowCreateModal(false);
+          setNewlyCreatedPatient(null);
           void loadQueue(true);
         }}
       />

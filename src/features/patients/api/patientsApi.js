@@ -21,7 +21,10 @@ export async function createPatient(payload) {
 }
 
 export async function updatePatient(patientId, payload) {
-  const { data } = await axiosClient.put(`/admin/patients/${patientId}`, payload);
+  const { data } = await axiosClient.put(
+    `/admin/patients/${patientId}`,
+    payload,
+  );
   return data;
 }
 

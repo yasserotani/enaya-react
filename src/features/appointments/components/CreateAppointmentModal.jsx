@@ -29,6 +29,7 @@ export default function CreateAppointmentModal({
   doctors = [],
   onClose,
   onCreated,
+  newlyCreatedPatient,
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -79,7 +80,7 @@ export default function CreateAppointmentModal({
     setSubmitError(null);
   }, [open, reset]);
 
-  // Handle returning from patient creation page
+  // Handle returning from patient creation page via location state
   useEffect(() => {
     if (open && location.state?.newlyCreatedPatient) {
       const newPatient = location.state.newlyCreatedPatient;
@@ -90,6 +91,15 @@ export default function CreateAppointmentModal({
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [open, location, navigate]);
+
+  // Handle newly created patient passed as prop
+  useEffect(() => {
+    if (open && newlyCreatedPatient) {
+      setSelectedPatient(newlyCreatedPatient);
+      setPatientSearch("");
+      setPatientResults([]);
+    }
+  }, [open, newlyCreatedPatient]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -183,6 +193,24 @@ export default function CreateAppointmentModal({
     }
   };
 
+  const handleCreatePatient = () => {
+    const formData = {
+      doctor_id: watch("doctor_id"),
+      date: watch("date"),
+      visit_reason: watch("visit_reason"),
+      notes: watch("notes"),
+      patientSearch,
+    };
+
+    navigate("/patients/new", {
+      state: {
+        returnToAppointment: true,
+        appointmentFormData: formData,
+        prefillName: patientSearch,
+      },
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button
@@ -269,6 +297,22 @@ export default function CreateAppointmentModal({
                       ))}
                     </ul>
                   )}
+                  {!isSearchingPatients &&
+                    patientSearch &&
+                    patientResults.length === 0 && (
+                      <div className="rounded-xl border border-border bg-muted-light/20 px-4 py-3">
+                        <p className="text-sm text-foreground/70">
+                          No patient found with "{patientSearch}"
+                        </p>
+                        <button
+                          type="button"
+                          onClick={handleCreatePatient}
+                          className="mt-2 text-sm font-medium text-primary hover:text-secondary"
+                        >
+                          + Create new patient
+                        </button>
+                      </div>
+                    )}
                 </div>
               )}
             </Field>

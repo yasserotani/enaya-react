@@ -46,7 +46,7 @@ export default function LoginPage() {
                   Enaya <span className="text-primary">Admin</span>
                 </h1>
                 <p className="mt-2 text-sm font-medium text-foreground/60 sm:text-base">
-                  Secure login to your account
+                  login to your account
                 </p>
               </div>
 
