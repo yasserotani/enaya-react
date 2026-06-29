@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import SupportAgentOutlinedIcon from "@mui/icons-material/SupportAgentOutlined";
@@ -91,13 +92,22 @@ export default function DashboardPage() {
             happening at Enaya today.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => void loadDashboard()}
-          className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted-light"
-        >
-          Refresh
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            to="/appointments"
+            state={{ openCreate: true }}
+            className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-background transition hover:bg-secondary"
+          >
+            New appointment
+          </Link>
+          <button
+            type="button"
+            onClick={() => void loadDashboard()}
+            className="rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted-light"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Today's Combined Operational Workflow Banner */}

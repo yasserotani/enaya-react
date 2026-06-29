@@ -1,32 +1,7 @@
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-
-const STATUS_STYLES = {
-  scheduled: "bg-info-light text-info",
-  completed: "bg-success-light text-success",
-  pending: "bg-warning-light text-warning",
-  cancelled: "bg-error-light text-error",
-};
-
-function getDoctorName(appointment) {
-  return (
-    appointment.doctor?.user?.name ||
-    appointment.doctor?.specialty ||
-    `Doctor #${appointment.doctor_id}`
-  );
-}
-
-function StatusBadge({ status }) {
-  const normalized = status?.toLowerCase() ?? "scheduled";
-
-  return (
-    <span
-      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium capitalize ${STATUS_STYLES[normalized] ?? "bg-muted-light text-foreground/70"}`}
-    >
-      {normalized}
-    </span>
-  );
-}
+import AppointmentStatusBadge from "../../appointments/components/AppointmentStatusBadge";
+import { getDoctorName } from "../../appointments/utils/appointmentHelpers";
 
 export default function RecentAppointmentsList({ appointments = [] }) {
   return (
@@ -62,7 +37,7 @@ export default function RecentAppointmentsList({ appointments = [] }) {
                   <p className="font-medium text-foreground">
                     {appointment.patient?.full_name ?? `Patient #${appointment.patient_id}`}
                   </p>
-                  <StatusBadge status={appointment.status} />
+                  <AppointmentStatusBadge status={appointment.status} />
                 </div>
                 <p className="mt-0.5 text-sm text-foreground/60">
                   {getDoctorName(appointment)}

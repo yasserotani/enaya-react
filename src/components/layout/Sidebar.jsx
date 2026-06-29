@@ -79,6 +79,14 @@ export default function Sidebar() {
                 <span>Appointments</span>
               </NavLink>
               <NavLink
+                to="/queue"
+                className={({ isActive }) =>
+                  `nav-link-base ${isActive ? "nav-link-active" : "nav-link-inactive"}`
+                }
+              >
+                <span>Queue monitoring</span>
+              </NavLink>
+              <NavLink
                 to="/departments"
                 className={({ isActive }) =>
                   `nav-link-base ${isActive ? "nav-link-active" : "nav-link-inactive"}`

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClinicAdmin - Live Queue Monitoring</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Manrope:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#737784",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e1e2eb",
+                        "outline-variant": "#c3c6d5",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "surface-variant": "#e1e2eb",
+                        "secondary": "#466270",
+                        "primary-container": "#0f52ba",
+                        "secondary-container": "#c6e4f4",
+                        "on-background": "#191b22",
+                        "on-secondary-container": "#4a6774",
+                        "tertiary-fixed": "#e1e3e4",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "surface-dim": "#d9d9e2",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e7e7f1",
+                        "inverse-on-surface": "#f0f0f9",
+                        "on-surface-variant": "#434653",
+                        "surface-container": "#ededf6",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f3f3fc",
+                        "primary": "#003c90",
+                        "on-primary-container": "#bcceff",
+                        "on-tertiary-fixed": "#191c1d",
+                        "inverse-surface": "#2e3037",
+                        "on-primary-fixed": "#001945",
+                        "tertiary-container": "#565859",
+                        "on-tertiary-container": "#cdcecf",
+                        "surface-tint": "#1d59c1",
+                        "on-secondary-fixed-variant": "#2e4b57",
+                        "surface": "#faf8ff",
+                        "secondary-fixed-dim": "#adcbda",
+                        "inverse-primary": "#b0c6ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191b22",
+                        "on-secondary-fixed": "#001f2a",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#3e4142",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#c5c7c8",
+                        "primary-fixed": "#d9e2ff",
+                        "on-primary-fixed-variant": "#00419c",
+                        "on-tertiary-fixed-variant": "#454748",
+                        "background": "#faf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-lg": "24px",
+                        "gutter": "24px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Manrope"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Manrope"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "headline-sm": ["Manrope"],
+                        "title-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        @keyframes pulse-live {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-pulse-live {
+            animation: pulse-live 2s infinite ease-in-out;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e1e2eb;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-x-hidden">
+<!-- Sidebar (Shared Components Navigation) -->
+<aside class="fixed left-0 top-0 h-full w-[280px] p-stack-md bg-surface border-r border-outline-variant flex flex-col z-50">
+<div class="mb-stack-lg px-stack-md">
+<h1 class="font-title-lg text-title-lg text-primary">ClinicAdmin</h1>
+<p class="text-label-md text-on-surface-variant">Medical Management</p>
+</div>
+<nav class="flex-1 space-y-unit">
+<!-- Navigation items from Shared Components JSON -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md">Users</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-body-md">Doctors</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="font-body-md">Appointments</span>
+</a>
+<!-- Active State: Queue Monitoring -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm bg-secondary-container text-on-secondary-container rounded-lg transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined">hourglass_empty</span>
+<span class="font-body-md font-semibold">Queue Monitoring</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined">domain</span>
+<span class="font-body-md">Departments</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors group mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] min-h-screen">
+<!-- Top Nav Bar -->
+<header class="flex justify-between items-center px-margin-desktop h-16 w-full bg-surface border-b border-outline-variant sticky top-0 z-40">
+<div class="flex items-center gap-stack-md">
+<h2 class="font-title-lg text-title-lg text-on-surface">Live Queue Monitoring</h2>
+<div class="flex items-center gap-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-label-md font-semibold animate-pulse-live">
+<span class="w-2 h-2 bg-red-600 rounded-full"></span>
+                    Live
+                </div>
+</div>
+<div class="flex items-center gap-stack-lg">
+<div class="flex gap-stack-lg text-on-surface-variant border-r border-outline-variant pr-stack-lg">
+<div class="text-center">
+<p class="text-label-md">Appointments today</p>
+<p class="font-title-lg text-on-surface">142</p>
+</div>
+<div class="text-center">
+<p class="text-label-md">Completed today</p>
+<p class="font-title-lg text-primary">89</p>
+</div>
+</div>
+<button class="flex items-center gap-2 px-stack-md py-stack-sm bg-surface border border-outline-variant hover:bg-surface-container transition-colors rounded-lg text-on-surface">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+<span class="font-body-md">Refresh</span>
+</button>
+</div>
+</header>
+<!-- Contextual Controls -->
+<div class="px-margin-desktop py-stack-md">
+<p class="text-on-surface-variant mb-stack-md">Monitor real-time patient flow and doctor availability across all departments.</p>
+<div class="flex gap-stack-sm overflow-x-auto pb-stack-sm no-scrollbar">
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-body-md whitespace-nowrap">All Departments</button>
+<button class="px-5 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:border-primary transition-colors whitespace-nowrap">Cardiology</button>
+<button class="px-5 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:border-primary transition-colors whitespace-nowrap">Pediatrics</button>
+<button class="px-5 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:border-primary transition-colors whitespace-nowrap">Dermatology</button>
+<button class="px-5 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:border-primary transition-colors whitespace-nowrap">Neurology</button>
+<button class="px-5 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:border-primary transition-colors whitespace-nowrap">General Medicine</button>
+</div>
+</div>
+<!-- Doctor Cards Grid -->
+<div class="px-margin-desktop grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-stack-lg">
+<!-- Doctor Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-[12px] p-stack-lg flex flex-col gap-stack-md shadow-sm">
+<div class="flex justify-between items-start">
+<div class="flex gap-stack-md items-center">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-title-lg">JS</div>
+<div>
+<h3 class="font-title-lg text-on-surface leading-tight">Dr. Jane Smith</h3>
+<p class="text-label-md text-on-surface-variant">Cardiology</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-label-md font-semibold">12 patients today</span>
+</div>
+<div class="mt-stack-sm p-stack-md bg-surface-container rounded-lg border border-outline-variant/30">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider">In Session</span>
+<span class="px-2 py-0.5 bg-[#FFF3E0] text-[#EF6C00] rounded-full text-[10px] font-bold uppercase">In Progress</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="font-title-lg text-on-surface">Robert Chen</span>
+<span class="text-primary font-semibold font-body-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+                            15:42
+                        </span>
+</div>
+</div>
+<div>
+<span class="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider block mb-stack-sm">Up Next</span>
+<div class="space-y-stack-sm">
+<div class="flex items-center justify-between p-stack-sm bg-surface-container-low rounded-lg">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Alice Walker</span>
+<span class="text-label-md text-primary font-medium">Wait: 12m</span>
+</div>
+<div class="text-right">
+<p class="font-body-md text-on-surface">11:15 AM</p>
+<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase">Arrived</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-stack-sm bg-surface-container-low rounded-lg">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Michael Scott</span>
+</div>
+<div class="text-right">
+<p class="font-body-md text-on-surface">11:30 AM</p>
+<span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase">Confirmed</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Doctor Card 2 (Empty state session) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-[12px] p-stack-lg flex flex-col gap-stack-md shadow-sm">
+<div class="flex justify-between items-start">
+<div class="flex gap-stack-md items-center">
+<div class="w-12 h-12 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-title-lg">BH</div>
+<div>
+<h3 class="font-title-lg text-on-surface leading-tight">Dr. Bill Hader</h3>
+<p class="text-label-md text-on-surface-variant">General Medicine</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-label-md font-semibold">8 patients today</span>
+</div>
+<div class="mt-stack-sm p-stack-md bg-surface-container-low rounded-lg border border-dashed border-outline-variant flex items-center justify-center py-8">
+<p class="text-on-surface-variant italic">No patient in session.</p>
+</div>
+<div>
+<span class="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider block mb-stack-sm">Up Next</span>
+<div class="space-y-stack-sm">
+<div class="flex items-center justify-between p-stack-sm bg-surface-container-low rounded-lg">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Linda Belcher</span>
+<span class="text-label-md text-primary font-medium">Wait: 4m</span>
+</div>
+<div class="text-right">
+<p class="font-body-md text-on-surface">11:15 AM</p>
+<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase">Arrived</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Doctor Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-[12px] p-stack-lg flex flex-col gap-stack-md shadow-sm">
+<div class="flex justify-between items-start">
+<div class="flex gap-stack-md items-center">
+<div class="w-12 h-12 rounded-full bg-tertiary-container text-on-tertiary flex items-center justify-center font-bold text-title-lg">ML</div>
+<div>
+<h3 class="font-title-lg text-on-surface leading-tight">Dr. Maria Lopez</h3>
+<p class="text-label-md text-on-surface-variant">Pediatrics</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-label-md font-semibold">18 patients today</span>
+</div>
+<div class="mt-stack-sm p-stack-md bg-surface-container rounded-lg border border-outline-variant/30">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider">In Session</span>
+<span class="px-2 py-0.5 bg-[#FFF3E0] text-[#EF6C00] rounded-full text-[10px] font-bold uppercase">In Progress</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="font-title-lg text-on-surface">Leo Messi</span>
+<span class="text-primary font-semibold font-body-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+                            08:12
+                        </span>
+</div>
+</div>
+<div>
+<span class="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider block mb-stack-sm">Up Next</span>
+<div class="space-y-stack-sm">
+<div class="flex items-center justify-between p-stack-sm bg-surface-container-low rounded-lg">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Sarah J. Parker</span>
+<span class="text-label-md text-primary font-medium">Wait: 22m</span>
+</div>
+<div class="text-right">
+<p class="font-body-md text-on-surface">11:00 AM</p>
+<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase">Arrived</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-stack-sm bg-surface-container-low rounded-lg opacity-60">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Tom Holland</span>
+</div>
+<div class="text-right">
+<p class="font-body-md text-on-surface">11:15 AM</p>
+<span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase">Confirmed</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Completed Today Table -->
+<section class="px-margin-desktop pb-margin-desktop">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-[12px] overflow-hidden shadow-sm">
+<div class="p-stack-lg border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-title-lg text-on-surface">Completed Today</h3>
+<button class="text-primary font-semibold text-body-md hover:underline">View All History</button>
+</div>
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container text-on-surface-variant uppercase text-label-md font-semibold tracking-wider">
+<tr>
+<th class="px-stack-lg py-4 border-b border-outline-variant">Patient</th>
+<th class="px-stack-lg py-4 border-b border-outline-variant">Doctor</th>
+<th class="px-stack-lg py-4 border-b border-outline-variant">Scheduled Time</th>
+<th class="px-stack-lg py-4 border-b border-outline-variant">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-low transition-colors h-14">
+<td class="px-stack-lg py-3 font-semibold text-on-surface">John Doe</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">Dr. Jane Smith</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">09:00 AM</td>
+<td class="px-stack-lg py-3">
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-label-md font-bold uppercase">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors h-14">
+<td class="px-stack-lg py-3 font-semibold text-on-surface">Emily Blunt</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">Dr. Maria Lopez</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">09:15 AM</td>
+<td class="px-stack-lg py-3">
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-label-md font-bold uppercase">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors h-14">
+<td class="px-stack-lg py-3 font-semibold text-on-surface">Oscar Isaac</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">Dr. Jane Smith</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">09:30 AM</td>
+<td class="px-stack-lg py-3">
+<span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-label-md font-bold uppercase">No-Show</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors h-14">
+<td class="px-stack-lg py-3 font-semibold text-on-surface">Florence Pugh</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">Dr. Bill Hader</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">10:00 AM</td>
+<td class="px-stack-lg py-3">
+<span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-label-md font-bold uppercase">Cancelled</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors h-14">
+<td class="px-stack-lg py-3 font-semibold text-on-surface">Cillian Murphy</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">Dr. Bill Hader</td>
+<td class="px-stack-lg py-3 text-on-surface-variant">10:45 AM</td>
+<td class="px-stack-lg py-3">
+<span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-label-md font-bold uppercase">Completed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<script>
+        // Micro-interactions for refresh simulation
+        document.querySelector('button:has(.material-symbols-outlined:contains("refresh"))')?.addEventListener('click', function() {
+            this.classList.add('opacity-50');
+            const icon = this.querySelector('.material-symbols-outlined');
+            icon.style.transition = 'transform 0.5s ease-in-out';
+            icon.style.transform = 'rotate(360deg)';
+            
+            setTimeout(() => {
+                this.classList.remove('opacity-50');
+                icon.style.transform = 'rotate(0deg)';
+            }, 600);
+        });
+
+        // Filter button behavior
+        const filterButtons = document.querySelectorAll('button.rounded-full');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-primary', 'text-on-primary');
+                    b.classList.add('bg-surface', 'border', 'border-outline-variant', 'text-on-surface-variant');
+                });
+                btn.classList.remove('bg-surface', 'border', 'border-outline-variant', 'text-on-surface-variant');
+                btn.classList.add('bg-primary', 'text-on-primary');
+            });
+        });
+    </script>
+</body></html>

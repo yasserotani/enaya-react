@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClinicAdmin - Appointment Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=inter:wght@100..900&amp;family=manrope:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#737784",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e1e2eb",
+                    "outline-variant": "#c3c6d5",
+                    "primary-fixed-dim": "#b0c6ff",
+                    "surface-variant": "#e1e2eb",
+                    "secondary": "#466270",
+                    "primary-container": "#0f52ba",
+                    "secondary-fixed": "#c9e7f7",
+                    "on-background": "#191b22",
+                    "on-secondary-container": "#4a6774",
+                    "tertiary-fixed": "#e1e3e4",
+                    "on-tertiary": "#ffffff",
+                    "surface-bright": "#faf8ff",
+                    "surface-dim": "#d9d9e2",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#e7e7f1",
+                    "inverse-on-surface": "#f0f0f9",
+                    "on-surface-variant": "#434653",
+                    "surface-container": "#ededf6",
+                    "on-error": "#ffffff",
+                    "surface-container-low": "#f3f3fc",
+                    "primary": "#003c90",
+                    "on-primary-container": "#bcceff",
+                    "on-tertiary-fixed": "#191c1d",
+                    "inverse-surface": "#2e3037",
+                    "on-primary-fixed": "#001945",
+                    "tertiary-container": "#565859",
+                    "secondary-container": "#c6e4f4",
+                    "on-tertiary-container": "#cdcecf",
+                    "surface-tint": "#1d59c1",
+                    "on-secondary-fixed-variant": "#2e4b57",
+                    "surface": "#faf8ff",
+                    "secondary-fixed-dim": "#adcbda",
+                    "inverse-primary": "#b0c6ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#191b22",
+                    "on-secondary-fixed": "#001f2a",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#3e4142",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#c5c7c8",
+                    "primary-fixed": "#d9e2ff",
+                    "on-primary-fixed-variant": "#00419c",
+                    "on-tertiary-fixed-variant": "#454748",
+                    "background": "#faf8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "stack-lg": "24px",
+                    "gutter": "24px",
+                    "margin-desktop": "32px",
+                    "margin-mobile": "16px",
+                    "unit": "4px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["manrope"],
+                    "body-lg": ["inter"],
+                    "headline-md": ["manrope"],
+                    "label-md": ["inter"],
+                    "body-md": ["inter"],
+                    "headline-lg": ["manrope"],
+                    "headline-lg-mobile": ["manrope"],
+                    "headline-sm": ["manrope"],
+                    "title-lg": ["manrope"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #F8F9FA;
+            color: #191b22;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        /* Custom Table Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e1e2eb;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-hidden">
+<!-- Global Layout Shell -->
+<div class="flex h-screen w-screen overflow-hidden">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[280px] p-stack-md bg-surface border-r border-outline-variant flex flex-col z-40">
+<div class="mb-stack-lg px-stack-md py-stack-sm flex items-center gap-stack-md">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<div>
+<h1 class="font-title-lg text-title-lg text-primary">ClinicAdmin</h1>
+<p class="text-[10px] text-on-surface-variant font-medium tracking-wider uppercase">Medical Management</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-unit">
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Users</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span>Doctors</span>
+</a>
+<!-- Active Tab: Appointments -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm bg-secondary-container text-on-secondary-container rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event</span>
+<span class="font-semibold">Appointments</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">hourglass_empty</span>
+<span>Queue Monitoring</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">domain</span>
+<span>Departments</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-stack-md">
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas Area -->
+<main class="ml-[280px] w-[calc(100%-280px)] h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center px-margin-desktop h-16 w-full bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-stack-md">
+<h2 class="font-title-lg text-title-lg text-on-surface">Appointment Management</h2>
+</div>
+<div class="flex items-center gap-stack-lg">
+<div class="flex items-center gap-stack-sm text-on-surface-variant cursor-pointer hover:bg-surface-container-low rounded-full p-2">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div class="flex items-center gap-stack-sm">
+<div class="text-right hidden sm:block">
+<p class="font-semibold text-body-md">Sarah Jenkins</p>
+<p class="text-xs text-on-surface-variant">Administrator</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-outline-variant object-cover" data-alt="A professional headshot of a friendly female medical clinic administrator in a bright, modern office setting. She wears a clean white blazer and has a welcoming smile. Soft, natural light fills the room, reinforcing a corporate yet empathetic medical atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC09QKjNBu-vWKORTlvAiJLm3RHP-1JlEvkApdFawoIuZo017j9jfNLbVGxHy-N6Lw0TfcWefqrH5DqMblZVxX1ZEFMJn74QItgy6iAkoE1TVoHqVfaMr8kPmbNwuEEf60CE5n-FBurBLGp2GB0Iofywr_NFnD3-qMbtEvoL8kHF27hpwasRjKP4Dk7bbzXXQ4_0gvOpV1E2ocvPhgop_nYou01XvfnNdimmE2ppiJ0PwoCW_g6BwYxrPPVtpwP8IPejEbOzt4A7axI"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-margin-desktop bg-[#F8F9FA]">
+<!-- KPI Row -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-stack-lg">
+<div class="bg-surface rounded-xl p-stack-md border border-outline-variant shadow-sm">
+<p class="text-on-surface-variant text-label-md mb-1">Total Appointments</p>
+<h3 class="font-headline-md text-headline-md text-on-surface">128</h3>
+<div class="mt-2 text-[10px] text-green-600 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +12% from last week
+                        </div>
+</div>
+<div class="bg-surface rounded-xl p-stack-md border border-outline-variant shadow-sm">
+<p class="text-on-surface-variant text-label-md mb-1">Scheduled</p>
+<h3 class="font-headline-md text-headline-md text-primary">45</h3>
+<div class="mt-2 text-[10px] text-on-surface-variant font-medium">Pending confirmation: 8</div>
+</div>
+<div class="bg-surface rounded-xl p-stack-md border border-outline-variant shadow-sm">
+<p class="text-on-surface-variant text-label-md mb-1">Completed</p>
+<h3 class="font-headline-md text-headline-md text-green-700">62</h3>
+<div class="mt-2 text-[10px] text-on-surface-variant font-medium">Retention rate: 94%</div>
+</div>
+<div class="bg-surface rounded-xl p-stack-md border border-outline-variant shadow-sm">
+<p class="text-on-surface-variant text-label-md mb-1">Cancelled</p>
+<h3 class="font-headline-md text-headline-md text-error">21</h3>
+<div class="mt-2 text-[10px] text-on-surface-variant font-medium">Rate: 16%</div>
+</div>
+</div>
+<!-- Action Bar -->
+<div class="bg-surface rounded-xl p-stack-md border border-outline-variant shadow-sm mb-stack-lg flex flex-wrap items-center justify-between gap-stack-md">
+<div class="flex flex-wrap items-center gap-stack-md">
+<div class="relative min-w-[200px]">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="w-full bg-[#F1F3F4] border-none rounded-lg pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-primary-container" placeholder="Search patient or phone..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<select class="bg-[#F1F3F4] border-none rounded-lg px-4 py-2 text-body-md focus:ring-2 focus:ring-primary-container">
+<option>All Doctors</option>
+<option>Dr. Emily Stone</option>
+<option>Dr. Marcus Welby</option>
+</select>
+<select class="bg-[#F1F3F4] border-none rounded-lg px-4 py-2 text-body-md focus:ring-2 focus:ring-primary-container">
+<option>All Statuses</option>
+<option>Scheduled</option>
+<option>Confirmed</option>
+<option>Arrived</option>
+<option>In Progress</option>
+<option>Completed</option>
+</select>
+<button class="bg-[#F1F3F4] text-on-surface p-2 rounded-lg hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">calendar_today</span>
+</button>
+</div>
+</div>
+<button class="bg-primary-container text-on-primary px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all" onclick="toggleModal('modal-new-appointment')">
+<span class="material-symbols-outlined">add</span> New appointment
+                    </button>
+</div>
+<!-- Main Data Table Container -->
+<div class="bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant text-left">
+<th class="px-6 py-4 font-semibold text-label-md text-on-surface-variant">Patient</th>
+<th class="px-6 py-4 font-semibold text-label-md text-on-surface-variant">Doctor</th>
+<th class="px-6 py-4 font-semibold text-label-md text-on-surface-variant">Date &amp; Time</th>
+<th class="px-6 py-4 font-semibold text-label-md text-on-surface-variant">Visit Reason</th>
+<th class="px-6 py-4 font-semibold text-label-md text-on-surface-variant">Status</th>
+<th class="px-6 py-4 font-semibold text-label-md text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row: Scheduled -->
+<tr class="hover:bg-surface-container-lowest transition-colors cursor-pointer" onclick="openDrawer()">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Eleanor Shellstrop</span>
+<span class="text-xs text-on-surface-variant">+1 (555) 0123</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface">Dr. Stone</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-on-surface">Oct 12, 2023</span>
+<span class="text-xs text-on-surface-variant font-medium">09:30 AM</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant italic">Annual Physical</td>
+<td class="px-6 py-4">
+<span class="status-pill bg-blue-50 text-blue-700">Scheduled</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-green-50 text-green-600 transition-colors" title="Confirm">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors" onclick="event.stopPropagation(); toggleModal('modal-cancel')" title="Cancel">
+<span class="material-symbols-outlined text-sm">cancel</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row: Confirmed -->
+<tr class="hover:bg-surface-container-lowest transition-colors cursor-pointer" onclick="openDrawer()">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Chidi Anagonye</span>
+<span class="text-xs text-on-surface-variant">+1 (555) 0456</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface">Dr. Welby</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-on-surface">Oct 12, 2023</span>
+<span class="text-xs text-on-surface-variant font-medium">10:15 AM</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant italic">Consultation</td>
+<td class="px-6 py-4">
+<span class="status-pill bg-green-50 text-green-700">Confirmed</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-secondary-container text-secondary transition-colors" title="Mark Arrived">
+<span class="material-symbols-outlined text-sm">person_check</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" onclick="event.stopPropagation(); toggleModal('modal-reschedule')" title="Reschedule">
+<span class="material-symbols-outlined text-sm">update</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-error-container text-error transition-colors" onclick="event.stopPropagation(); toggleModal('modal-cancel')" title="Cancel">
+<span class="material-symbols-outlined text-sm">cancel</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row: Arrived -->
+<tr class="hover:bg-surface-container-lowest transition-colors cursor-pointer" onclick="openDrawer()">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Tahani Al-Jamil</span>
+<span class="text-xs text-on-surface-variant">+1 (555) 0789</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface">Dr. Stone</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-on-surface">Oct 12, 2023</span>
+<span class="text-xs text-on-surface-variant font-medium">08:45 AM</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant italic">Follow-up</td>
+<td class="px-6 py-4">
+<span class="status-pill bg-orange-50 text-orange-700">Arrived</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row: Completed -->
+<tr class="hover:bg-surface-container-lowest transition-colors cursor-pointer" onclick="openDrawer()">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-semibold text-on-surface">Jason Mendoza</span>
+<span class="text-xs text-on-surface-variant">+1 (555) 0011</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface">Dr. Welby</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-on-surface">Oct 12, 2023</span>
+<span class="text-xs text-on-surface-variant font-medium">08:00 AM</span>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant italic">Lab Results</td>
+<td class="px-6 py-4">
+<span class="status-pill bg-surface-container-highest text-on-surface-variant">Completed</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 border-t border-outline-variant flex items-center justify-between">
+<span class="text-xs text-on-surface-variant font-medium">Showing 1-10 of 128 results</span>
+<div class="flex gap-2">
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center hover:bg-surface-container disabled:opacity-50">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary-container text-on-primary flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center hover:bg-surface-container">2</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center hover:bg-surface-container">3</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center hover:bg-surface-container">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Right Side Detail Drawer -->
+<div class="fixed inset-y-0 right-0 w-[400px] bg-surface shadow-2xl z-50 transform translate-x-full transition-transform duration-300 border-l border-outline-variant flex flex-col" id="detail-drawer">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm">Appointment Details</h2>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant" onclick="closeDrawer()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Patient Mini Profile -->
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center text-secondary text-headline-sm font-bold">
+                    ES
+                </div>
+<div>
+<h3 class="font-semibold text-body-lg">Eleanor Shellstrop</h3>
+<p class="text-on-surface-variant">Female • 34 years old</p>
+<p class="text-xs text-on-surface-variant">+1 (555) 0123</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-3 rounded-lg">
+<p class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-1">Doctor</p>
+<p class="text-body-md font-semibold">Dr. Emily Stone</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg">
+<p class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-1">Status</p>
+<span class="status-pill bg-blue-50 text-blue-700">Scheduled</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg">
+<p class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-1">Date</p>
+<p class="text-body-md font-semibold">Oct 12, 2023</p>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg">
+<p class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold mb-1">Time</p>
+<p class="text-body-md font-semibold">09:30 AM</p>
+</div>
+</div>
+<div>
+<p class="text-label-md font-semibold text-on-surface mb-2">Visit Reason</p>
+<p class="text-body-md text-on-surface-variant bg-surface-container-low p-3 rounded-lg">
+                    Routine annual physical examination and standard blood panel testing.
+                </p>
+</div>
+<div>
+<p class="text-label-md font-semibold text-on-surface mb-2">Notes</p>
+<p class="text-body-md text-on-surface-variant border border-outline-variant p-3 rounded-lg min-h-[100px]">
+                    Patient mentioned occasional mild knee pain during morning runs. To be discussed during visit.
+                </p>
+</div>
+<div>
+<p class="text-label-md font-semibold text-on-surface mb-2">Prescriptions (Read-only)</p>
+<ul class="space-y-2">
+<li class="flex items-center justify-between p-2 rounded bg-surface border border-outline-variant">
+<span class="text-body-md font-medium">Lisinopril 10mg</span>
+<span class="text-xs text-on-surface-variant">Daily</span>
+</li>
+<li class="flex items-center justify-between p-2 rounded bg-surface border border-outline-variant opacity-60">
+<span class="text-body-md font-medium">Amoxicillin (Complete)</span>
+<span class="text-xs text-on-surface-variant">Aug 2023</span>
+</li>
+</ul>
+</div>
+</div>
+<div class="p-6 border-t border-outline-variant bg-surface-container-low">
+<button class="w-full bg-primary py-3 rounded-lg text-white font-semibold hover:opacity-90">Edit Appointment</button>
+</div>
+</div>
+<!-- Modals -->
+<!-- New Appointment Modal -->
+<div class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] p-4" id="modal-new-appointment">
+<div class="bg-surface w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[921px]">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm">New Appointment</h2>
+<button class="material-symbols-outlined text-on-surface-variant" onclick="toggleModal('modal-new-appointment')">close</button>
+</div>
+<div class="p-6 overflow-y-auto space-y-4"><div class="space-y-1"><label class="text-label-md font-semibold">Patient</label><div class="relative"><input class="w-full bg-[#F1F3F4] border-none rounded-lg p-3 text-body-md" placeholder="Search for patient..." type="text"/><span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline">search</span></div></div><div class="grid grid-cols-2 gap-4"><div class="space-y-1"><label class="text-label-md font-semibold">Doctor</label><select class="w-full bg-[#F1F3F4] border-none rounded-lg p-3 text-body-md"><option>Dr. Emily Stone</option><option>Dr. Marcus Welby</option></select></div><div class="space-y-1"><label class="text-label-md font-semibold">Date</label><input class="w-full bg-[#F1F3F4] border-none rounded-lg p-3 text-body-md" type="date" value="2023-10-12"/></div></div><div class="space-y-4"><label class="text-label-md font-semibold">Time Slot Timeline</label><div class="space-y-3"><div class="flex items-center gap-1 overflow-x-auto py-2 custom-scrollbar"><div class="flex-shrink-0 w-8 h-10 bg-surface-container-highest rounded flex items-center justify-center text-[10px] opacity-50" title="08:00 (Booked)"></div><div class="flex-shrink-0 w-8 h-10 bg-surface-container-highest rounded flex items-center justify-center text-[10px] opacity-50" title="08:30 (Booked)"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="09:00"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="09:30"></div><div class="flex-shrink-0 w-8 h-10 bg-surface-container-highest rounded flex items-center justify-center text-[10px] opacity-50" title="10:00 (Booked)"></div><div class="flex-shrink-0 w-8 h-10 bg-primary rounded flex items-center justify-center shadow-md" title="10:30 (Selected)"><span class="material-symbols-outlined text-white text-sm">check</span></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="11:00"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="11:30"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="12:00"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="12:30"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="13:00"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="13:30"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="14:00"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="14:30"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="15:00"></div><div class="flex-shrink-0 w-8 h-10 bg-[#F1F3F4] border border-outline-variant rounded cursor-pointer hover:bg-surface-container-high" title="15:30"></div></div><div class="flex justify-between px-1 text-[10px] text-on-surface-variant font-medium"><span>08:00</span><span>10:00</span><span>12:00</span><span>14:00</span><span>16:00</span></div><p class="text-body-md font-semibold text-primary">Selected: 10:30 AM</p></div></div><div class="space-y-1"><label class="text-label-md font-semibold">Visit Reason</label><input class="w-full bg-[#F1F3F4] border-none rounded-lg p-3 text-body-md" placeholder="Brief reason for visit" type="text"/></div><div class="space-y-1"><label class="text-label-md font-semibold">Notes</label><textarea class="w-full bg-[#F1F3F4] border-none rounded-lg p-3 text-body-md" placeholder="Additional clinical notes..." rows="3"></textarea></div></div>
+<div class="p-6 border-t border-outline-variant flex justify-end gap-3 bg-surface-container-low">
+<button class="px-6 py-2.5 rounded-lg font-semibold text-on-surface-variant hover:bg-surface-container transition-colors" onclick="toggleModal('modal-new-appointment')">Cancel</button>
+<button class="px-6 py-2.5 bg-primary-container text-on-primary rounded-lg font-semibold shadow-md hover:opacity-90">Create Appointment</button>
+</div>
+</div>
+</div>
+<!-- Reschedule Modal -->
+<div class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] p-4" id="modal-reschedule">
+<div class="bg-surface w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant">
+<h2 class="font-headline-sm text-headline-sm">Reschedule Appointment</h2>
+</div>
+<div class="p-6 space-y-4">
+<p class="text-body-md text-on-surface-variant">Select a new date and time for <b>Chidi Anagonye</b>.</p>
+<div class="space-y-1">
+<label class="text-label-md font-semibold">New Date</label>
+<input class="w-full bg-[#F1F3F4] border-none rounded-lg p-3 text-body-md" type="date"/>
+</div>
+<div class="space-y-1">
+<label class="text-label-md font-semibold">New Time</label>
+<input class="w-full bg-[#F1F3F4] border-none rounded-lg p-3 text-body-md" type="time"/>
+</div>
+</div>
+<div class="p-6 border-t border-outline-variant flex justify-end gap-3 bg-surface-container-low">
+<button class="px-6 py-2.5 rounded-lg font-semibold text-on-surface-variant hover:bg-surface-container transition-colors" onclick="toggleModal('modal-reschedule')">Cancel</button>
+<button class="px-6 py-2.5 bg-primary-container text-on-primary rounded-lg font-semibold shadow-md hover:opacity-90">Confirm Change</button>
+</div>
+</div>
+</div>
+<!-- Cancel Modal -->
+<div class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] p-4" id="modal-cancel">
+<div class="bg-surface w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant">
+<h2 class="font-headline-sm text-headline-sm text-error">Cancel Appointment</h2>
+</div>
+<div class="p-6 space-y-4">
+<p class="text-body-md text-on-surface-variant">Are you sure you want to cancel this appointment? This action can be tracked in history.</p>
+<div class="space-y-1">
+<label class="text-label-md font-semibold">Reason for Cancellation</label>
+<textarea class="w-full bg-[#F1F3F4] border-none rounded-lg p-3 text-body-md" placeholder="Optional reason..." rows="3"></textarea>
+</div>
+</div>
+<div class="p-6 border-t border-outline-variant flex justify-end gap-3 bg-surface-container-low">
+<button class="px-6 py-2.5 rounded-lg font-semibold text-on-surface-variant hover:bg-surface-container transition-colors" onclick="toggleModal('modal-cancel')">Go Back</button>
+<button class="px-6 py-2.5 bg-error text-white rounded-lg font-semibold shadow-md hover:opacity-90">Confirm Cancellation</button>
+</div>
+</div>
+</div>
+<script>
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function openDrawer() {
+            const drawer = document.getElementById('detail-drawer');
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function closeDrawer() {
+            const drawer = document.getElementById('detail-drawer');
+            drawer.classList.add('translate-x-full');
+        }
+
+        // Close drawer on clicking outside
+        window.onclick = function(event) {
+            const drawer = document.getElementById('detail-drawer');
+            if (event.target.closest('main') && !drawer.classList.contains('translate-x-full')) {
+                closeDrawer();
+            }
+        }
+    </script>
+</body></html>

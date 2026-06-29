@@ -15,6 +15,8 @@ import DoctorsPage from "../features/doctors/DoctorsPage";
 import DoctorDetailPage from "../features/doctors/DoctorDetailPage";
 import AddDoctorPage from "../features/doctors/AddDoctorPage";
 import AppointmentsPage from "../features/appointments/AppointmentsPage";
+import AppointmentDetailPage from "../features/appointments/AppointmentDetailPage";
+import QueueMonitoringPage from "../features/appointments/QueueMonitoringPage";
 import RolesPage from "../features/roles/RolesPage";
 import PatientsPage from "../features/patients/PatientsPage";
 import PatientDetailPage from "../features/patients/PatientDetailPage";
@@ -49,6 +51,11 @@ export default function AppRouter() {
           <Route path="/doctors/new" element={<AddDoctorPage />} />
           <Route path="/doctors/:doctorId" element={<DoctorDetailPage />} />
           <Route path="/appointments" element={<AppointmentsPage />} />
+          <Route
+            path="/appointments/:appointmentId"
+            element={<AppointmentDetailPage />}
+          />
+          <Route path="/queue" element={<QueueMonitoringPage />} />
           <Route path="/roles" element={<RolesPage />} />
           <Route path="/departments" element={<DepartmentPage />} />
         </Route>
