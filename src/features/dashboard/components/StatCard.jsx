@@ -27,7 +27,7 @@ export default function StatCard({
         </div>
         {Icon ? (
           <div
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl  ${accentStyles[accent] ?? accentStyles.primary}`}
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${accentStyles[accent] ?? accentStyles.primary}`}
           >
             <Icon className="h-5 w-5" />
           </div>

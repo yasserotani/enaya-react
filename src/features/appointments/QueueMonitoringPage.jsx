@@ -153,14 +153,9 @@ export default function QueueMonitoringPage() {
             <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
               Live queue monitoring
             </h1>
-            <p className="mt-1 text-sm text-foreground/60">
-              Real-time patient flow across departments
-            </p>
+
           </div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-error-light px-3 py-1 text-xs font-semibold text-error">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-error" />
-            Live
-          </span>
+
         </div>
 
         <div className="flex flex-wrap items-center gap-4">

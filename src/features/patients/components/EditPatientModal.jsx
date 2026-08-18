@@ -211,7 +211,7 @@ export default function EditPatientModal({ open, patient, onClose, onUpdated }) 
         type="text"
         className={inputClassName}
       />
-            </Field>
+    </Field>
 
             <div className="flex justify-end gap-3 border-t border-border pt-5">
               <button
