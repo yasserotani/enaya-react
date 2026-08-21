@@ -32,3 +32,8 @@ export async function deletePatient(patientId) {
   const { data } = await axiosClient.delete(`/admin/patients/${patientId}`);
   return data;
 }
+
+export async function fetchPatientMedicalRecord(patientId, params = {}) {
+  const { data } = await axiosClient.get(`/admin/appointments/medical-record/${patientId}`, { params });
+  return data;
+}

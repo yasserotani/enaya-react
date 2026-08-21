@@ -17,7 +17,7 @@ export default function RescheduleAppointmentModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const doctorId = appointment?.doctor_id;
+  const doctorId = appointment?.doctor_id || appointment?.doctor?.id;
 
   useEffect(() => {
     if (!open || !appointment) return;

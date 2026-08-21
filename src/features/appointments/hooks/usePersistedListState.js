@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 function readStoredState(storageKey, defaults) {
   try {
@@ -21,12 +21,12 @@ export function usePersistedListState(storageKey, defaults) {
     sessionStorage.setItem(storageKey, JSON.stringify(state));
   }, [storageKey, state]);
 
-  const updateState = (patch) => {
+  const updateState = useCallback((patch) => {
     setState((prev) => ({
       ...prev,
       ...(typeof patch === "function" ? patch(prev) : patch),
     }));
-  };
+  }, []);
 
   return [state, updateState];
 }

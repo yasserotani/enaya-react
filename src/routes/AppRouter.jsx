@@ -21,7 +21,9 @@ import RolesPage from "../features/roles/RolesPage";
 import PatientsPage from "../features/patients/PatientsPage";
 import PatientDetailPage from "../features/patients/PatientDetailPage";
 import AddPatientPage from "../features/patients/AddPatientPage";
+import PatientMedicalRecordPage from "../features/patients/PatientMedicalRecordPage";
 import DepartmentPage from "../features/departments/DepartmentPage";
+import SessionDetailsPage from "../features/sessions/SessionDetailsPage";
 function ProtectedLayout() {
   return (
     <ProtectedRoute>
@@ -47,6 +49,7 @@ export default function AppRouter() {
             element={<PatientDetailPage />}
           />
           <Route path="/patients/:patientId" element={<PatientDetailPage />} />
+          <Route path="/patients/:patientId/medical-record" element={<PatientMedicalRecordPage />} />
           <Route path="/doctors" element={<DoctorsPage />} />
           <Route path="/doctors/new" element={<AddDoctorPage />} />
           <Route path="/doctors/:doctorId" element={<DoctorDetailPage />} />
@@ -56,6 +59,7 @@ export default function AppRouter() {
             element={<AppointmentDetailPage />}
           />
           <Route path="/queue" element={<QueueMonitoringPage />} />
+          <Route path="/sessions/:sessionId" element={<SessionDetailsPage />} />
           <Route path="/roles" element={<RolesPage />} />
           <Route path="/departments" element={<DepartmentPage />} />
         </Route>

@@ -189,6 +189,7 @@ export default function AppointmentsPage() {
       delete params.search;
       delete params.status;
       delete params.page;
+      params._t = Date.now();
 
       const result = await fetchAppointmentStats(params);
       setStats(result);
@@ -334,7 +335,7 @@ export default function AppointmentsPage() {
         <StatCard
           icon={CancelOutlinedIcon}
           label="Cancelled"
-          value={isStatsLoading ? "…" : (stats?.cancelled ?? 0)}
+          value={isStatsLoading ? "…" : (stats?.canceled ?? stats?.cancelled ?? 0)}
           sublabel={
             stats?.no_show != null ? `${stats.no_show} no-shows` : undefined
           }

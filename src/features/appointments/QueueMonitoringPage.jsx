@@ -61,7 +61,7 @@ export default function QueueMonitoringPage() {
           fetchAllAppointments({ ...dateParams, per_page: 100 }),
           fetchDoctors({ per_page: 100 }),
           fetchDepartments(),
-          fetchAppointmentStats(dateParams),
+          fetchAppointmentStats({ ...dateParams, _t: Date.now() }),
         ]);
 
         setAppointments(appointmentItems);
@@ -151,7 +151,7 @@ export default function QueueMonitoringPage() {
         <div className="flex flex-wrap items-center gap-3">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              Live queue monitoring
+             queue monitoring
             </h1>
 
           </div>

@@ -404,6 +404,17 @@ export default function PatientsPage() {
                       <div className="flex justify-end gap-1">
                         <button
                           type="button"
+                          title="View Medical Record"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/patients/${patient.id}/medical-record`);
+                          }}
+                          className="rounded-lg px-3 py-1.5 text-sm font-medium text-primary transition hover:bg-primary/10"
+                        >
+                          Records
+                        </button>
+                        <button
+                          type="button"
                           title="Edit patient"
                           onClick={(e) => {
                             e.stopPropagation();

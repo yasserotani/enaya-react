@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom"; // Removed useLocation
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { fetchPatientById, fetchPatientByUserId } from "./api/patientsApi";
 
 function DetailRow({ label, value }) {
@@ -19,6 +19,7 @@ function formatDate(date) {
 
 export default function PatientDetailPage() {
   const { userId, patientId } = useParams();
+  const navigate = useNavigate();
 
   // We no longer need location.state because the API provides the email and name
   const [patient, setPatient] = useState(null);
@@ -106,17 +107,25 @@ export default function PatientDetailPage() {
                 {patient.full_name}
               </h1>
             </div>
-            <span
-              className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                patient.profile_completed
-                  ? "bg-success-light text-success"
-                  : "bg-warning-light text-warning"
-              }`}
-            >
-              {patient.profile_completed
-                ? "Profile complete"
-                : "Profile incomplete"}
-            </span>
+            <div className="flex flex-col items-end gap-3 sm:flex-row sm:items-center">
+              <span
+                className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
+                  patient.profile_completed
+                    ? "bg-success-light text-success"
+                    : "bg-warning-light text-warning"
+                }`}
+              >
+                {patient.profile_completed
+                  ? "Profile complete"
+                  : "Profile incomplete"}
+              </span>
+              <button
+                onClick={() => navigate(`/patients/${patient.id}/medical-record`)}
+                className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-background transition hover:bg-secondary"
+              >
+                Medical Record
+              </button>
+            </div>
           </div>
         </div>
 
