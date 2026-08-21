@@ -22,6 +22,8 @@ import PatientsPage from "../features/patients/PatientsPage";
 import PatientDetailPage from "../features/patients/PatientDetailPage";
 import AddPatientPage from "../features/patients/AddPatientPage";
 import DepartmentPage from "../features/departments/DepartmentPage";
+import DepartmentDetailPage from "../features/departments/DepartmentDetailPage";
+import AddDepartmentPage from "../features/departments/AddDepartmentPage";
 function ProtectedLayout() {
   return (
     <ProtectedRoute>
@@ -58,6 +60,8 @@ export default function AppRouter() {
           <Route path="/queue" element={<QueueMonitoringPage />} />
           <Route path="/roles" element={<RolesPage />} />
           <Route path="/departments" element={<DepartmentPage />} />
+          <Route path="/departments/new" element={<AddDepartmentPage />} />
+          <Route path="/departments/:departmentId" element={<DepartmentDetailPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
