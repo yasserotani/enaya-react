@@ -2,9 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   fetchDepartments,
-  deleteDepartment,
 } from "./api/departmentsApi";
-import DeleteDepartmentConfirm from "./components/DeleteDepartmentConfirm";
 
 export default function DepartmentPage() {
   const navigate = useNavigate();
@@ -21,10 +19,6 @@ export default function DepartmentPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [listError, setListError] = useState(null);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [departmentToDelete, setDepartmentToDelete] = useState(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState(null);
 
   useEffect(() => {
     if (!location.state?.successMessage) return;
@@ -71,36 +65,6 @@ export default function DepartmentPage() {
   useEffect(() => {
     void loadDepartments();
   }, [loadDepartments]);
-
-  const handleDeleteClick = (department, e) => {
-    e.stopPropagation();
-    setDepartmentToDelete(department);
-    setDeleteError(null);
-    setDeleteOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!departmentToDelete) return;
-
-    setIsDeleting(true);
-    setDeleteError(null);
-
-    try {
-      await deleteDepartment(departmentToDelete.id);
-      setDeleteOpen(false);
-      setDepartmentToDelete(null);
-      setSuccessMessage(`Department "${departmentToDelete.name}" deleted successfully.`);
-      await loadDepartments();
-    } catch (err) {
-      setDeleteError(
-        err.response?.data?.message ||
-          err.response?.data?.error ||
-          "Failed to delete department",
-      );
-    } finally {
-      setIsDeleting(false);
-    }
-  };
 
   return (
     <div className="flex h-full flex-col">
@@ -188,34 +152,10 @@ export default function DepartmentPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 flex gap-2">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/departments/${department.id}`);
-                    }}
-                    className="flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground/80 transition hover:bg-muted-light hover:text-foreground"
-                  >
-                    View Details
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/departments/${department.id}`, { state: { editMode: true } });
-                    }}
-                    className="flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground/80 transition hover:bg-muted-light hover:text-foreground"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleDeleteClick(department, e)}
-                    className="flex-1 rounded-lg border border-error/30 bg-error/5 px-3 py-1.5 text-xs font-medium text-error transition hover:bg-error/10"
-                  >
-                    Delete
-                  </button>
+                <div className="mt-4">
+                  <span className="text-xs font-medium text-primary transition group-hover:text-secondary">
+                    View details →
+                  </span>
                 </div>
               </article>
             ))}
@@ -248,20 +188,6 @@ export default function DepartmentPage() {
           </div>
         )}
       </div>
-
-      <DeleteDepartmentConfirm
-        open={deleteOpen}
-        department={departmentToDelete}
-        isDeleting={isDeleting}
-        error={deleteError}
-        onClose={() => {
-          if (!isDeleting) {
-            setDeleteOpen(false);
-            setDepartmentToDelete(null);
-          }
-        }}
-        onConfirm={handleDeleteConfirm}
-      />
     </div>
   );
 }

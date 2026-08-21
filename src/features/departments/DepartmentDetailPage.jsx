@@ -36,13 +36,6 @@ export default function DepartmentDetailPage() {
   const [deleteError, setDeleteError] = useState(null);
 
   useEffect(() => {
-    if (location.state?.editMode) {
-      setEditOpen(true);
-      navigate(location.pathname, { replace: true, state: null });
-    }
-  }, [location.state?.editMode, location.pathname, navigate]);
-
-  useEffect(() => {
     let cancelled = false;
 
     async function load() {
