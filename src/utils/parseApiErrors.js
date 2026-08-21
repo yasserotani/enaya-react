@@ -47,6 +47,12 @@ export function parseApiErrors(err) {
       "patients_phone_unique",
       "phone",
       "phone number",
+    ) ||
+    duplicateEntryMessage(
+      message,
+      "departments_name_unique",
+      "name",
+      "department name",
     ) || { general: [message] }
   );
 }
