@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Logo-Matched Flat Palette */
+    --theme-primary: #1da1b8; /* Clean medical teal from logo pulse */
+    --theme-secondary: #4faec1; /* Mid-tone slate teal */
+    --theme-accent: #2a738c; /* Deep corporate sea blue */
+    --theme-background: #f4f8f9; /* Soft, non-glare clinical white */
+    --theme-foreground: #031424; /* Exact deep navy from logo text */
+
+    /* Flat State Colors (Desaturated, Professional) */
+    --theme-success: #15803d;
+    --theme-success-light: #f0fdf4;
+    --theme-success-border: #bbf7d0;
+
+    --theme-error: #b91c1c;
+    --theme-error-light: #fef2f2;
+    --theme-error-border: #fecaca;
+
+    --theme-warning: #c2410c;
+    --theme-warning-light: #fffbeb;
+    --theme-warning-border: #fde68a;
+
+    --theme-info: #0369a1;
+    --theme-info-light: #f0f9ff;
+    --theme-info-border: #bae6fd;
+
+    --theme-muted: #627685;
+    --theme-muted-light: #eef3f6;
+    --theme-border: #d1dee5;
+    --theme-surface: #ffffff;
+  }
+
+  .dark {
+    --theme-primary: #4cc7dd;
+    --theme-secondary: #3292a4;
+    --theme-accent: #6db6cf;
+    --theme-background: #0b131a; /* Deep navy background instead of pitch black */
+    --theme-foreground: #e9f2f5;
+
+    --theme-success: #22c55e;
+    --theme-success-light: #052e16;
+    --theme-success-border: #15803d;
+
+    --theme-error: #ef4444;
+    --theme-error-light: #2d0a0a;
+    --theme-error-border: #b91c1c;
+
+    --theme-warning: #f97316;
+    --theme-warning-light: #1c1000;
+    --theme-warning-border: #c2410c;
+
+    --theme-info: #38bdf8;
+    --theme-info-light: #001e2e;
+    --theme-info-border: #0369a1;
+
+    --theme-muted: #8fa0ad;
+    --theme-muted-light: #16222c;
+    --theme-border: #243545;
+    --theme-surface: #111d28;
+  }
+}
+
+@theme {
+  --color-primary: var(--theme-primary);
+  --color-secondary: var(--theme-secondary);
+  --color-accent: var(--theme-accent);
+  --color-background: var(--theme-background);
+  --color-foreground: var(--theme-foreground);
+
+  --color-success: var(--theme-success);
+  --color-success-light: var(--theme-success-light);
+  --color-success-border: var(--theme-success-border);
+
+  --color-error: var(--theme-error);
+  --color-error-light: var(--theme-error-light);
+  --color-error-border: var(--theme-error-border);
+
+  --color-warning: var(--theme-warning);
+  --color-warning-light: var(--theme-warning-light);
+  --color-warning-border: var(--theme-warning-border);
+
+  --color-info: var(--theme-info);
+  --color-info-light: var(--theme-info-light);
+  --color-info-border: var(--theme-info-border);
+
+  --color-muted: var(--theme-muted);
+  --color-muted-light: var(--theme-muted-light);
+  --color-border: var(--theme-border);
+  --color-surface: var(--theme-surface);
+
+  --animate-fade-in: fadeIn 0.4s ease-out both;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer components {
+  /* Page layouts */
+  .page-container {
+    @apply mx-auto max-w-3xl py-4;
+  }
+
+  .page-card {
+    @apply relative rounded-2xl border border-border bg-surface p-6 shadow-lg md:p-8;
+  }
+
+  .page-content {
+    @apply flex flex-col items-center gap-4 text-center;
+  }
+
+  .page-title {
+    @apply text-3xl font-bold tracking-tight text-foreground md:text-4xl;
+  }
+
+  /* Navigation */
+  .nav-link-base {
+    @apply rounded-xl px-3 py-2.5 text-sm font-medium transition;
+  }
+
+  .nav-link-active {
+    @apply bg-primary text-background shadow-sm;
+  }
+
+  .nav-link-inactive {
+    @apply text-foreground/80 hover:bg-secondary/10 hover:text-foreground;
+  }
+}
+/* Clean, padded structural navigation item */
+.nav-link-base {
+  @apply rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-3.5 mx-1;
+}
+
+/* Premium active state matching your layout language */
+.nav-link-active {
+  @apply bg-primary/10 text-primary font-semibold shadow-sm;
+}
+
+/* Soft, modern hover state */
+.nav-link-inactive {
+  @apply text-foreground/60 hover:bg-white/5 hover:text-foreground;
+}
