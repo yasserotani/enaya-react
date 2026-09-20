@@ -36,8 +36,8 @@ export function useAuth() {
       // Extract roleId
       const roleId = user.roleId;
 
-      // Allowed roles: 1 = admin, 2 = receptionist
-      const allowedRoles = [4];
+      // Allowed roles: 1 = admin, 2 = receptionist, 3 = doctor, 4 = other
+      const allowedRoles = [3, 4];
 
       if (!allowedRoles.includes(roleId)) {
         throw new Error("Access denied");
