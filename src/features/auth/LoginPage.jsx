@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "./useAuth";
 import { ThemeToggle } from "../../components/ui/ThemeToggle";
+import { GoogleLogin } from "@react-oauth/google";
 import logoImg from "../../assets/icon-logo.png";
 
 export default function LoginPage() {
@@ -12,6 +13,18 @@ export default function LoginPage() {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      await login({
+        token: credentialResponse.credential,
+        provider: "google",
+      });
+    } catch (err) {
+      const message = err.response?.data?.message || err.response?.data?.error;
+      setServerErrors({ general: [message || "Google login failed"] });
+    }
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -106,6 +119,24 @@ export default function LoginPage() {
               >
                 {isSubmitting ? "Logging in..." : "Sign in"}
               </button>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-surface px-2 text-foreground/50">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => console.error("Google Sign-In Error")}
+                />
+              </div>
             </form>
           </div>
         </div>

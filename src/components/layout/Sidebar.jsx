@@ -98,7 +98,7 @@ export default function Sidebar() {
           </div>
 
           {/* Settings Section */}
-          <div>
+          {/* <div>
             <p className="mb-2.5 px-4 text-[11px] font-bold uppercase tracking-[0.15em] text-foreground/30">
               Settings
             </p>
@@ -112,7 +112,7 @@ export default function Sidebar() {
                 <span>Roles</span>
               </NavLink>
             </div>
-          </div>
+          </div> */}
         </nav>
       </div>
 

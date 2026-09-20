@@ -27,7 +27,9 @@ export function useAuth() {
 
   const login = useCallback(
     async (credentials) => {
-      const { data } = await axiosClient.post("/auth/login", credentials);
+      const endpoint =
+        credentials.provider === "google" ? "/auth/google" : "/auth/login";
+      const { data } = await axiosClient.post(endpoint, credentials);
 
       const { token, user } = data.data;
 
